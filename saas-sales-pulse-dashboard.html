@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaaS Sales Pulse Dashboard</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #FFFFFF;
+    --surface: #F8F9FC;
+    --border: #E5E7EB;
+    --text-primary: #111827;
+    --text-secondary: #6B7280;
+    --accent: #4F46E5;
+    --accent-light: #EEF2FF;
+    --green: #10B981;
+    --green-light: #ECFDF5;
+    --orange: #F59E0B;
+    --orange-light: #FFFBEB;
+    --red: #EF4444;
+    --red-light: #FEF2F2;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --radius: 12px;
+  }
+
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--surface);
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+
+  /* Navigation */
+  .nav {
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    height: 64px;
+    gap: 8px;
+  }
+
+  .nav-logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-right: 32px;
+    white-space: nowrap;
+  }
+
+  .nav-logo span { color: var(--text-primary); }
+
+  .nav-tabs {
+    display: flex;
+    gap: 4px;
+  }
+
+  .nav-tab {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .nav-tab:hover { background: var(--surface); color: var(--text-primary); }
+  .nav-tab.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+
+  .nav-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .target-badge {
+    font-size: 13px;
+    color: var(--text-secondary);
+    background: var(--surface);
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .target-badge strong { color: var(--accent); }
+
+  .btn-set-target {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+  }
+
+  .btn-set-target:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Main */
+  .main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* Cards */
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+  }
+
+  /* Dashboard */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .kpi-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .kpi-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .kpi-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.1;
+  }
+
+  .kpi-sub {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+  }
+
+  .kpi-card.accent { border-left: 4px solid var(--accent); }
+  .kpi-card.green { border-left: 4px solid var(--green); }
+  .kpi-card.orange { border-left: 4px solid var(--orange); }
+
+  .kpi-card.accent .kpi-value { color: var(--accent); }
+  .kpi-card.green .kpi-value { color: var(--green); }
+
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .chart-container { position: relative; height: 320px; }
+
+  .top-reps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .rep-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--surface);
+  }
+
+  .rep-rank {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .rep-rank.gold { background: #FEF3C7; color: #D97706; }
+
+  .rep-info { flex: 1; min-width: 0; }
+  .rep-name { font-size: 14px; font-weight: 600; }
+  .rep-amount { font-size: 13px; color: var(--text-secondary); }
+
+  /* Data Entry Form */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  .form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .form-input, .form-select {
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg);
+    transition: border-color 0.15s;
+    outline: none;
+  }
+
+  .form-input:focus, .form-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+
+  .form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+
+  .btn {
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: none;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover { background: #4338CA; }
+
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover { background: var(--border); }
+
+  .btn-danger {
+    background: var(--red-light);
+    color: var(--red);
+    border: 1px solid transparent;
+  }
+
+  .btn-danger:hover { background: #FEE2E2; }
+
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+
+  /* Records Table */
+  .table-wrapper {
+    overflow-x: auto;
+    margin-top: 16px;
+  }
+
+  .table-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 12px;
+  }
+
+  .search-input {
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    width: 280px;
+    outline: none;
+  }
+
+  .search-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tr:hover td { background: var(--surface); }
+
+  .status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .status-badge.won { background: var(--green-light); color: var(--green); }
+  .status-badge.opportunity { background: var(--orange-light); color: var(--orange); }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text-secondary);
+  }
+
+  .empty-state p { font-size: 15px; margin-top: 8px; }
+
+  /* AI Chat */
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 140px);
+    max-height: 700px;
+  }
+
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .chat-msg {
+    display: flex;
+    gap: 12px;
+    max-width: 85%;
+  }
+
+  .chat-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+
+  .chat-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .chat-msg.ai .chat-avatar { background: var(--accent-light); color: var(--accent); }
+  .chat-msg.user .chat-avatar { background: var(--green-light); color: var(--green); }
+
+  .chat-bubble {
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .chat-msg.ai .chat-bubble { background: var(--surface); border: 1px solid var(--border); }
+  .chat-msg.user .chat-bubble { background: var(--accent); color: #fff; }
+
+  .chat-input-area {
+    display: flex;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .chat-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    resize: none;
+    min-height: 44px;
+    max-height: 120px;
+  }
+
+  .chat-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+
+  .btn-send {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+
+  .btn-send:hover { background: #4338CA; }
+  .btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .quick-questions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .quick-q {
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .quick-q:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 24px;
+    width: 400px;
+    max-width: 90vw;
+    box-shadow: var(--shadow-md);
+  }
+
+  .modal h3 { font-size: 16px; margin-bottom: 16px; }
+
+  .modal .form-group { margin-bottom: 12px; }
+
+  .modal .form-actions { margin-top: 16px; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: var(--text-primary);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow-md);
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 300;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* Progress bar */
+  .progress-bar {
+    height: 8px;
+    background: var(--surface);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 12px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .nav-inner { padding: 0 16px; }
+    .nav-logo { margin-right: 16px; font-size: 16px; }
+    .nav-tab { padding: 6px 10px; font-size: 13px; }
+    .main { padding: 16px; }
+    .kpi-grid { grid-template-columns: 1fr; }
+    .charts-grid { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .target-badge { display: none; }
+    .search-input { width: 100%; }
+    .table-controls { flex-direction: column; align-items: stretch; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">Sales<span>Pulse</span></div>
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-page="dashboard">Dashboard</button>
+      <button class="nav-tab" data-page="entry">Data Entry</button>
+      <button class="nav-tab" data-page="records">Records</button>
+      <button class="nav-tab" data-page="ai">AI Insight</button>
+    </div>
+    <div class="nav-right">
+      <div class="target-badge">Target ARR: <strong id="navTarget">-</strong></div>
+      <button class="btn-set-target" onclick="openTargetModal()">Set Target</button>
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+
+  <!-- Dashboard Page -->
+  <div id="page-dashboard" class="page active">
+    <div class="kpi-grid">
+      <div class="kpi-card accent">
+        <div class="kpi-label">Total ARR</div>
+        <div class="kpi-value" id="kpiARR">&#8361;0</div>
+        <div class="kpi-sub" id="kpiARRSub">Closed-Won contracts</div>
+      </div>
+      <div class="kpi-card green">
+        <div class="kpi-label">Current MRR</div>
+        <div class="kpi-value" id="kpiMRR">&#8361;0</div>
+        <div class="kpi-sub">Monthly Recurring Revenue</div>
+      </div>
+      <div class="kpi-card orange">
+        <div class="kpi-label">Target Achievement</div>
+        <div class="kpi-value" id="kpiTarget">0%</div>
+        <div class="progress-bar"><div class="progress-fill" id="kpiProgressFill" style="width:0%; background:var(--orange);"></div></div>
+        <div class="kpi-sub" id="kpiTargetSub">Set a target to track</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Pipeline (Opportunity)</div>
+        <div class="kpi-value" id="kpiPipeline">&#8361;0</div>
+        <div class="kpi-sub" id="kpiPipelineSub">In progress</div>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="card">
+        <div class="card-title">Monthly Revenue Trend</div>
+        <div class="chart-container"><canvas id="chartTrend"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Top Sales Reps</div>
+        <div id="topReps" class="top-reps">
+          <div class="empty-state" style="padding:24px;"><p>No data yet</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Plan Distribution</div>
+      <div class="chart-container" style="height:240px;"><canvas id="chartPlan"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Data Entry Page -->
+  <div id="page-entry" class="page">
+    <div class="card">
+      <div class="card-title">New Contract Entry</div>
+      <form id="entryForm" class="form-grid" onsubmit="return handleSubmit(event)">
+        <input type="hidden" id="editId" value="">
+        <div class="form-group">
+          <label class="form-label">Account Name</label>
+          <input type="text" class="form-input" id="fAccount" placeholder="e.g. Acme Corp" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sales Rep</label>
+          <input type="text" class="form-input" id="fRep" placeholder="e.g. Kim" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Quote Date</label>
+          <input type="date" class="form-input" id="fQuoteDate" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Closing Date</label>
+          <input type="date" class="form-input" id="fCloseDate" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Plan</label>
+          <select class="form-select" id="fPlan" required>
+            <option value="">Select plan</option>
+            <option value="Basic">Basic</option>
+            <option value="Pro">Pro</option>
+            <option value="Enterprise">Enterprise</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="fStatus" required>
+            <option value="Opportunity">Opportunity (In Progress)</option>
+            <option value="Closed-won">Closed-Won</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Total Amount (&#8361;)</label>
+          <input type="number" class="form-input" id="fAmount" placeholder="e.g. 12000000" min="0" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contract Period (Months)</label>
+          <input type="number" class="form-input" id="fMonths" placeholder="e.g. 12" min="1" required>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">Save Contract</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Records Page -->
+  <div id="page-records" class="page">
+    <div class="card">
+      <div class="card-title">All Records</div>
+      <div class="table-controls">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search by account, rep, plan..." oninput="renderRecords()">
+        <div style="display:flex;gap:8px;">
+          <select class="form-select" id="filterStatus" onchange="renderRecords()" style="font-size:13px;padding:8px 12px;">
+            <option value="all">All Status</option>
+            <option value="Closed-won">Closed-Won</option>
+            <option value="Opportunity">Opportunity</option>
+          </select>
+          <button class="btn btn-danger btn-sm" onclick="clearAllData()">Clear All</button>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Rep</th>
+              <th>Plan</th>
+              <th>Total Amount</th>
+              <th>Period</th>
+              <th>MRR</th>
+              <th>Quote Date</th>
+              <th>Closing Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="recordsBody"></tbody>
+        </table>
+      </div>
+      <div id="recordsEmpty" class="empty-state" style="display:none;">
+        <p>No records found. Start by adding contracts in Data Entry.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Insight Page -->
+  <div id="page-ai" class="page">
+    <div class="card chat-container">
+      <div class="card-title">AI Sales Insight Assistant</div>
+      <div class="quick-questions">
+        <button class="quick-q" onclick="askQuick(this.textContent)">Best performer this month?</button>
+        <button class="quick-q" onclick="askQuick(this.textContent)">Next month forecast?</button>
+        <button class="quick-q" onclick="askQuick(this.textContent)">Can we hit the annual target?</button>
+        <button class="quick-q" onclick="askQuick(this.textContent)">Pipeline summary</button>
+        <button class="quick-q" onclick="askQuick(this.textContent)">Plan distribution analysis</button>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-msg ai">
+          <div class="chat-avatar">AI</div>
+          <div class="chat-bubble">
+            Welcome! I'm your AI Sales Insight assistant. I can analyze your sales data and provide forecasts.<br><br>
+            Try asking me about performance, forecasts, or trends.
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <textarea class="chat-input" id="chatInput" placeholder="Ask about your sales data..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
+        <button class="btn-send" onclick="sendChat()" id="btnSend">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Target Modal -->
+<div class="modal-overlay" id="targetModal">
+  <div class="modal">
+    <h3>Set Monthly ARR Target</h3>
+    <div class="form-group">
+      <label class="form-label">Target ARR (&#8361;)</label>
+      <input type="number" class="form-input" id="targetInput" placeholder="e.g. 100000000" min="0">
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-secondary" onclick="closeTargetModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTarget()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== State ====================
+const DB_KEY = 'salesPulseData';
+const TARGET_KEY = 'salesPulseTarget';
+
+function loadData() {
+  try { return JSON.parse(localStorage.getItem(DB_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveData(data) {
+  localStorage.setItem(DB_KEY, JSON.stringify(data));
+}
+
+function getTarget() {
+  return Number(localStorage.getItem(TARGET_KEY)) || 0;
+}
+
+function setTarget(v) {
+  localStorage.setItem(TARGET_KEY, String(v));
+}
+
+// ==================== Navigation ====================
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('page-' + tab.dataset.page).classList.add('active');
+  });
+});
+
+// ==================== Format ====================
+function fmtKRW(n) {
+  if (n >= 1e8) return '₩' + (n / 1e8).toFixed(1) + '억';
+  if (n >= 1e4) return '₩' + (n / 1e4).toFixed(0) + '만';
+  return '₩' + n.toLocaleString('ko-KR');
+}
+
+function fmtFull(n) {
+  return '₩' + Number(n).toLocaleString('ko-KR');
+}
+
+// ==================== Form / CRUD ====================
+function handleSubmit(e) {
+  e.preventDefault();
+  const data = loadData();
+  const editId = document.getElementById('editId').value;
+
+  const record = {
+    id: editId || Date.now().toString(),
+    account: document.getElementById('fAccount').value.trim(),
+    rep: document.getElementById('fRep').value.trim(),
+    quoteDate: document.getElementById('fQuoteDate').value,
+    closeDate: document.getElementById('fCloseDate').value,
+    plan: document.getElementById('fPlan').value,
+    amount: Number(document.getElementById('fAmount').value),
+    months: Number(document.getElementById('fMonths').value),
+    status: document.getElementById('fStatus').value,
+  };
+
+  if (editId) {
+    const idx = data.findIndex(d => d.id === editId);
+    if (idx !== -1) data[idx] = record;
+    showToast('Contract updated');
+  } else {
+    data.push(record);
+    showToast('Contract saved');
+  }
+
+  saveData(data);
+  resetForm();
+  refreshAll();
+}
+
+function resetForm() {
+  document.getElementById('entryForm').reset();
+  document.getElementById('editId').value = '';
+  document.getElementById('submitBtn').textContent = 'Save Contract';
+}
+
+function editRecord(id) {
+  const data = loadData();
+  const r = data.find(d => d.id === id);
+  if (!r) return;
+
+  document.getElementById('editId').value = r.id;
+  document.getElementById('fAccount').value = r.account;
+  document.getElementById('fRep').value = r.rep;
+  document.getElementById('fQuoteDate').value = r.quoteDate;
+  document.getElementById('fCloseDate').value = r.closeDate;
+  document.getElementById('fPlan').value = r.plan;
+  document.getElementById('fAmount').value = r.amount;
+  document.getElementById('fMonths').value = r.months;
+  document.getElementById('fStatus').value = r.status;
+  document.getElementById('submitBtn').textContent = 'Update Contract';
+
+  // Switch to entry page
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelector('[data-page="entry"]').classList.add('active');
+  document.getElementById('page-entry').classList.add('active');
+}
+
+function deleteRecord(id) {
+  if (!confirm('Delete this record?')) return;
+  const data = loadData().filter(d => d.id !== id);
+  saveData(data);
+  showToast('Record deleted');
+  refreshAll();
+}
+
+function clearAllData() {
+  if (!confirm('Delete ALL records? This cannot be undone.')) return;
+  saveData([]);
+  showToast('All data cleared');
+  refreshAll();
+}
+
+// ==================== Records Table ====================
+function renderRecords() {
+  let data = loadData();
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const status = document.getElementById('filterStatus').value;
+
+  if (search) {
+    data = data.filter(d =>
+      d.account.toLowerCase().includes(search) ||
+      d.rep.toLowerCase().includes(search) ||
+      d.plan.toLowerCase().includes(search)
+    );
+  }
+  if (status !== 'all') {
+    data = data.filter(d => d.status === status);
+  }
+
+  const tbody = document.getElementById('recordsBody');
+  const empty = document.getElementById('recordsEmpty');
+
+  if (data.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+  tbody.innerHTML = data.map(d => {
+    const mrr = d.amount / d.months;
+    const statusClass = d.status === 'Closed-won' ? 'won' : 'opportunity';
+    const statusLabel = d.status === 'Closed-won' ? 'Closed-Won' : 'Opportunity';
+    return `<tr>
+      <td><strong>${esc(d.account)}</strong></td>
+      <td>${esc(d.rep)}</td>
+      <td>${d.plan}</td>
+      <td>${fmtFull(d.amount)}</td>
+      <td>${d.months}mo</td>
+      <td>${fmtFull(Math.round(mrr))}</td>
+      <td>${d.quoteDate}</td>
+      <td>${d.closeDate}</td>
+      <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
+      <td>
+        <button class="btn btn-secondary btn-sm" onclick="editRecord('${d.id}')" style="margin-right:4px;">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteRecord('${d.id}')">Del</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+// ==================== Dashboard KPIs ====================
+function updateDashboard() {
+  const data = loadData();
+  const won = data.filter(d => d.status === 'Closed-won');
+  const opp = data.filter(d => d.status === 'Opportunity');
+
+  // Total ARR = sum of all total amounts for Closed-won
+  const totalARR = won.reduce((s, d) => s + d.amount, 0);
+
+  // Current MRR = sum of (amount / months) for Closed-won
+  const totalMRR = won.reduce((s, d) => s + d.amount / d.months, 0);
+
+  // Pipeline
+  const pipeline = opp.reduce((s, d) => s + d.amount, 0);
+
+  // Target
+  const target = getTarget();
+  const achievement = target > 0 ? (totalARR / target) * 100 : 0;
+
+  document.getElementById('kpiARR').textContent = fmtKRW(totalARR);
+  document.getElementById('kpiARRSub').textContent = `${won.length} Closed-Won contracts`;
+  document.getElementById('kpiMRR').textContent = fmtKRW(Math.round(totalMRR));
+  document.getElementById('kpiPipeline').textContent = fmtKRW(pipeline);
+  document.getElementById('kpiPipelineSub').textContent = `${opp.length} opportunities in progress`;
+
+  if (target > 0) {
+    document.getElementById('kpiTarget').textContent = achievement.toFixed(1) + '%';
+    document.getElementById('kpiTargetSub').textContent = `Target: ${fmtKRW(target)}`;
+    const pct = Math.min(achievement, 100);
+    const fill = document.getElementById('kpiProgressFill');
+    fill.style.width = pct + '%';
+    fill.style.background = achievement >= 100 ? 'var(--green)' : achievement >= 60 ? 'var(--orange)' : 'var(--red)';
+  } else {
+    document.getElementById('kpiTarget').textContent = '-';
+    document.getElementById('kpiTargetSub').textContent = 'Set a target to track';
+    document.getElementById('kpiProgressFill').style.width = '0%';
+  }
+
+  document.getElementById('navTarget').textContent = target > 0 ? fmtKRW(target) : '-';
+
+  updateTopReps(won);
+  updateCharts(data);
+}
+
+function updateTopReps(won) {
+  const repMap = {};
+  won.forEach(d => {
+    repMap[d.rep] = (repMap[d.rep] || 0) + d.amount;
+  });
+
+  const reps = Object.entries(repMap).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const container = document.getElementById('topReps');
+
+  if (reps.length === 0) {
+    container.innerHTML = '<div class="empty-state" style="padding:24px;"><p>No data yet</p></div>';
+    return;
+  }
+
+  container.innerHTML = reps.map(([name, amount], i) => `
+    <div class="rep-item">
+      <div class="rep-rank ${i === 0 ? 'gold' : ''}">${i + 1}</div>
+      <div class="rep-info">
+        <div class="rep-name">${esc(name)}</div>
+        <div class="rep-amount">${fmtFull(amount)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ==================== Charts ====================
+let trendChart = null;
+let planChart = null;
+
+function updateCharts(data) {
+  const won = data.filter(d => d.status === 'Closed-won');
+
+  // Monthly trend (by closing date)
+  const monthMap = {};
+  won.forEach(d => {
+    const m = d.closeDate.substring(0, 7); // YYYY-MM
+    monthMap[m] = (monthMap[m] || 0) + d.amount;
+  });
+
+  const months = Object.keys(monthMap).sort();
+  const values = months.map(m => monthMap[m]);
+
+  if (trendChart) trendChart.destroy();
+  trendChart = new Chart(document.getElementById('chartTrend'), {
+    type: 'bar',
+    data: {
+      labels: months.map(m => { const [y, mo] = m.split('-'); return `${mo}/${y.slice(2)}`; }),
+      datasets: [{
+        label: 'Closed-Won Revenue',
+        data: values,
+        backgroundColor: 'rgba(79, 70, 229, 0.15)',
+        borderColor: '#4F46E5',
+        borderWidth: 2,
+        borderRadius: 6,
+        barPercentage: 0.6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => fmtFull(ctx.raw)
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: v => fmtKRW(v),
+            font: { family: 'Pretendard' }
+          },
+          grid: { color: '#F3F4F6' }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: 'Pretendard' } }
+        }
+      }
+    }
+  });
+
+  // Plan distribution
+  const planMap = {};
+  data.forEach(d => {
+    planMap[d.plan] = (planMap[d.plan] || 0) + d.amount;
+  });
+
+  const plans = Object.keys(planMap);
+  const planValues = plans.map(p => planMap[p]);
+  const planColors = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444'];
+
+  if (planChart) planChart.destroy();
+  planChart = new Chart(document.getElementById('chartPlan'), {
+    type: 'doughnut',
+    data: {
+      labels: plans,
+      datasets: [{
+        data: planValues,
+        backgroundColor: planColors.slice(0, plans.length),
+        borderWidth: 0,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: { font: { family: 'Pretendard', size: 13 }, padding: 16 }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.label}: ${fmtFull(ctx.raw)}`
+          }
+        }
+      }
+    }
+  });
+}
+
+// ==================== Target Modal ====================
+function openTargetModal() {
+  document.getElementById('targetInput').value = getTarget() || '';
+  document.getElementById('targetModal').classList.add('active');
+}
+
+function closeTargetModal() {
+  document.getElementById('targetModal').classList.remove('active');
+}
+
+function saveTarget() {
+  const v = Number(document.getElementById('targetInput').value) || 0;
+  setTarget(v);
+  closeTargetModal();
+  showToast('Target updated');
+  refreshAll();
+}
+
+// ==================== Toast ====================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ==================== AI Chat ====================
+function askQuick(text) {
+  document.getElementById('chatInput').value = text;
+  sendChat();
+}
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+
+  appendChat('user', msg);
+  input.value = '';
+
+  // Generate AI response based on data analysis
+  setTimeout(() => {
+    const response = generateAIResponse(msg);
+    appendChat('ai', response);
+  }, 400);
+}
+
+function appendChat(role, text) {
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `chat-msg ${role}`;
+  div.innerHTML = `
+    <div class="chat-avatar">${role === 'ai' ? 'AI' : 'You'}</div>
+    <div class="chat-bubble">${text.replace(/\n/g, '<br>')}</div>
+  `;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function generateAIResponse(question) {
+  const data = loadData();
+  const won = data.filter(d => d.status === 'Closed-won');
+  const opp = data.filter(d => d.status === 'Opportunity');
+  const target = getTarget();
+  const q = question.toLowerCase();
+
+  if (data.length === 0) {
+    return 'There is no sales data to analyze yet. Please add some contracts in the Data Entry section first.';
+  }
+
+  const totalARR = won.reduce((s, d) => s + d.amount, 0);
+  const totalMRR = won.reduce((s, d) => s + d.amount / d.months, 0);
+  const pipeline = opp.reduce((s, d) => s + d.amount, 0);
+
+  // Rep performance
+  const repMap = {};
+  won.forEach(d => {
+    if (!repMap[d.rep]) repMap[d.rep] = { amount: 0, count: 0 };
+    repMap[d.rep].amount += d.amount;
+    repMap[d.rep].count += 1;
+  });
+  const repRanking = Object.entries(repMap).sort((a, b) => b[1].amount - a[1].amount);
+
+  // Current month data
+  const now = new Date();
+  const curMonth = now.toISOString().substring(0, 7);
+  const curMonthWon = won.filter(d => d.closeDate.startsWith(curMonth));
+  const curMonthRepMap = {};
+  curMonthWon.forEach(d => {
+    curMonthRepMap[d.rep] = (curMonthRepMap[d.rep] || 0) + d.amount;
+  });
+  const curMonthReps = Object.entries(curMonthRepMap).sort((a, b) => b[1] - a[1]);
+
+  // Best performer
+  if (q.includes('best') || q.includes('performer') || q.includes('top') || q.includes('가장') || q.includes('성과') || q.includes('담당자')) {
+    if (curMonthReps.length > 0) {
+      const [topName, topAmt] = curMonthReps[0];
+      let response = `<strong>This Month's Best Performer</strong>\n\n`;
+      response += `🏆 <strong>${esc(topName)}</strong> — ${fmtFull(topAmt)}\n\n`;
+      if (curMonthReps.length > 1) {
+        response += `Full ranking this month:\n`;
+        curMonthReps.forEach(([name, amt], i) => {
+          response += `${i + 1}. ${esc(name)}: ${fmtFull(amt)}\n`;
+        });
+      }
+      return response;
+    } else if (repRanking.length > 0) {
+      let response = `No closed deals this month yet. Overall ranking:\n\n`;
+      repRanking.slice(0, 5).forEach(([name, info], i) => {
+        response += `${i + 1}. ${esc(name)}: ${fmtFull(info.amount)} (${info.count} deals)\n`;
+      });
+      return response;
+    }
+    return 'No closed-won data available to determine the best performer.';
+  }
+
+  // Forecast
+  if (q.includes('forecast') || q.includes('next month') || q.includes('예상') || q.includes('예측') || q.includes('다음 달')) {
+    let response = `<strong>Next Month Forecast</strong>\n\n`;
+    response += `<strong>Current Pipeline (Opportunity):</strong> ${fmtFull(pipeline)}\n`;
+    response += `Deals in progress: ${opp.length}\n\n`;
+
+    if (opp.length > 0) {
+      response += `If all opportunities close, projected additional revenue: ${fmtFull(pipeline)}\n\n`;
+      response += `Pipeline breakdown:\n`;
+      opp.forEach(d => {
+        response += `• ${esc(d.account)} (${d.plan}): ${fmtFull(d.amount)}\n`;
+      });
+
+      // Average monthly trend
+      const monthMap = {};
+      won.forEach(d => {
+        const m = d.closeDate.substring(0, 7);
+        monthMap[m] = (monthMap[m] || 0) + d.amount;
+      });
+      const monthlyValues = Object.values(monthMap);
+      if (monthlyValues.length >= 2) {
+        const avg = monthlyValues.reduce((a, b) => a + b, 0) / monthlyValues.length;
+        response += `\nAverage monthly closed revenue: ${fmtFull(Math.round(avg))}`;
+        response += `\nConservative forecast (based on avg): ${fmtFull(Math.round(avg))}`;
+        response += `\nOptimistic forecast (avg + pipeline): ${fmtFull(Math.round(avg + pipeline))}`;
+      }
+    } else {
+      response += 'No opportunities in the pipeline. Consider adding new prospects.';
+    }
+    return response;
+  }
+
+  // Annual target
+  if (q.includes('annual') || q.includes('target') || q.includes('goal') || q.includes('연간') || q.includes('목표') || q.includes('달성')) {
+    if (target <= 0) {
+      return 'No ARR target has been set. Please set a target using the "Set Target" button in the navigation bar.';
+    }
+    const achievement = (totalARR / target) * 100;
+    let response = `<strong>Target Achievement Analysis</strong>\n\n`;
+    response += `Target ARR: ${fmtFull(target)}\n`;
+    response += `Current ARR (Closed-Won): ${fmtFull(totalARR)}\n`;
+    response += `Achievement: <strong>${achievement.toFixed(1)}%</strong>\n`;
+    response += `Gap: ${fmtFull(target - totalARR)}\n\n`;
+
+    if (achievement >= 100) {
+      response += `Congratulations! You've exceeded the target! 🎉`;
+    } else if (achievement >= 80) {
+      response += `You're close! With ${fmtFull(pipeline)} in the pipeline, `;
+      if (totalARR + pipeline >= target) {
+        response += `closing all opportunities would put you over the target.`;
+      } else {
+        response += `you still need additional ${fmtFull(target - totalARR - pipeline)} beyond current pipeline.`;
+      }
+    } else if (achievement >= 50) {
+      response += `Moderate progress. You need ${fmtFull(target - totalARR)} more to hit the target. `;
+      response += `Current pipeline of ${fmtFull(pipeline)} would help but may not be enough.`;
+    } else {
+      response += `Significant gap remains. Focus on accelerating pipeline generation and closing existing opportunities.`;
+    }
+    return response;
+  }
+
+  // Pipeline summary
+  if (q.includes('pipeline') || q.includes('opportunity') || q.includes('진행') || q.includes('파이프')) {
+    if (opp.length === 0) return 'No opportunities in the pipeline currently.';
+    let response = `<strong>Pipeline Summary</strong>\n\n`;
+    response += `Total pipeline value: ${fmtFull(pipeline)}\n`;
+    response += `Number of opportunities: ${opp.length}\n\n`;
+    opp.forEach(d => {
+      response += `• <strong>${esc(d.account)}</strong> — ${d.plan} — ${fmtFull(d.amount)} (${d.months}mo) — Rep: ${esc(d.rep)}\n`;
+    });
+    return response;
+  }
+
+  // Plan distribution
+  if (q.includes('plan') || q.includes('distribution') || q.includes('플랜') || q.includes('분포')) {
+    const planMap = {};
+    data.forEach(d => {
+      if (!planMap[d.plan]) planMap[d.plan] = { amount: 0, count: 0 };
+      planMap[d.plan].amount += d.amount;
+      planMap[d.plan].count += 1;
+    });
+    let response = `<strong>Plan Distribution</strong>\n\n`;
+    const totalAmount = data.reduce((s, d) => s + d.amount, 0);
+    Object.entries(planMap).sort((a, b) => b[1].amount - a[1].amount).forEach(([plan, info]) => {
+      const pct = ((info.amount / totalAmount) * 100).toFixed(1);
+      response += `• <strong>${plan}</strong>: ${fmtFull(info.amount)} (${pct}%) — ${info.count} contracts\n`;
+    });
+    return response;
+  }
+
+  // General summary
+  let response = `<strong>Sales Overview</strong>\n\n`;
+  response += `Total ARR (Closed-Won): ${fmtFull(totalARR)}\n`;
+  response += `Current MRR: ${fmtFull(Math.round(totalMRR))}\n`;
+  response += `Pipeline (Opportunity): ${fmtFull(pipeline)}\n`;
+  response += `Total contracts: ${data.length} (${won.length} closed, ${opp.length} in progress)\n`;
+  if (repRanking.length > 0) {
+    response += `\nTop rep: ${esc(repRanking[0][0])} with ${fmtFull(repRanking[0][1].amount)}`;
+  }
+  if (target > 0) {
+    const ach = ((totalARR / target) * 100).toFixed(1);
+    response += `\nTarget achievement: ${ach}%`;
+  }
+  response += `\n\nAsk me specific questions about performers, forecasts, or targets!`;
+  return response;
+}
+
+// ==================== Refresh ====================
+function refreshAll() {
+  updateDashboard();
+  renderRecords();
+}
+
+// ==================== Init ====================
+function init() {
+  // Set default date to today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('fQuoteDate').value = today;
+  document.getElementById('fCloseDate').value = today;
+
+  refreshAll();
+}
+
+// Close modal on overlay click
+document.getElementById('targetModal').addEventListener('click', function(e) {
+  if (e.target === this) closeTargetModal();
+});
+
+init();
+</script>
+</body>
+</html>
