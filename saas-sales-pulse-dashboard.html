@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -559,6 +560,121 @@
     transition: width 0.5s ease;
   }
 
+  /* File Upload */
+  .upload-section {
+    margin-bottom: 24px;
+  }
+
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 40px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--surface);
+  }
+
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .upload-zone-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+    color: var(--text-secondary);
+  }
+
+  .upload-zone-text {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .upload-zone-sub {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .upload-zone input[type="file"] { display: none; }
+
+  .mapping-section {
+    margin-top: 16px;
+  }
+
+  .mapping-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .mapping-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mapping-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    min-width: 120px;
+  }
+
+  .mapping-select {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+  }
+
+  .mapping-select:focus { border-color: var(--accent); }
+
+  .preview-table-wrapper {
+    max-height: 240px;
+    overflow: auto;
+    margin-top: 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  .preview-table-wrapper table { font-size: 13px; }
+  .preview-table-wrapper th { font-size: 11px; position: sticky; top: 0; z-index: 1; }
+  .preview-table-wrapper td { font-size: 13px; padding: 8px 12px; }
+
+  .import-stats {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .import-stats strong { color: var(--text-primary); }
+
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 24px 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .section-divider::before, .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
   /* Responsive */
   @media (max-width: 768px) {
     .nav-inner { padding: 0 16px; }
@@ -642,6 +758,72 @@
 
   <!-- Data Entry Page -->
   <div id="page-entry" class="page">
+    <!-- File Upload Section -->
+    <div class="card upload-section">
+      <div class="card-title">Import from File (CSV / XLSX)</div>
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-zone-icon">&#128196;</div>
+        <div class="upload-zone-text">Click to upload or drag & drop</div>
+        <div class="upload-zone-sub">Supports .csv and .xlsx files</div>
+        <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" onchange="handleFileSelect(event)">
+      </div>
+
+      <!-- Column Mapping (hidden until file loaded) -->
+      <div id="mappingArea" style="display:none;">
+        <div class="mapping-section">
+          <div class="card-title" style="margin-top:20px;">Column Mapping</div>
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Match your file columns to the required fields. Leave as "-- Skip --" for optional fields.</p>
+          <div class="mapping-grid">
+            <div class="mapping-item">
+              <span class="mapping-label">Account Name *</span>
+              <select class="mapping-select" id="mapAccount"></select>
+            </div>
+            <div class="mapping-item">
+              <span class="mapping-label">Sales Rep *</span>
+              <select class="mapping-select" id="mapRep"></select>
+            </div>
+            <div class="mapping-item">
+              <span class="mapping-label">Quote Date</span>
+              <select class="mapping-select" id="mapQuoteDate"></select>
+            </div>
+            <div class="mapping-item">
+              <span class="mapping-label">Closing Date</span>
+              <select class="mapping-select" id="mapCloseDate"></select>
+            </div>
+            <div class="mapping-item">
+              <span class="mapping-label">Plan</span>
+              <select class="mapping-select" id="mapPlan"></select>
+            </div>
+            <div class="mapping-item">
+              <span class="mapping-label">Total Amount *</span>
+              <select class="mapping-select" id="mapAmount"></select>
+            </div>
+            <div class="mapping-item">
+              <span class="mapping-label">Contract Period (mo)</span>
+              <select class="mapping-select" id="mapMonths"></select>
+            </div>
+            <div class="mapping-item">
+              <span class="mapping-label">Status</span>
+              <select class="mapping-select" id="mapStatus"></select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="card-title" style="margin-top:20px;">Preview (First 5 rows)</div>
+        <div class="preview-table-wrapper" id="previewTable"></div>
+        <div class="import-stats" id="importStats"></div>
+
+        <div class="form-actions" style="margin-top:16px;">
+          <button class="btn btn-secondary" onclick="cancelImport()">Cancel</button>
+          <button class="btn btn-primary" onclick="executeImport()">Import Data</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider">OR enter manually</div>
+
+    <!-- Manual Entry -->
     <div class="card">
       <div class="card-title">New Contract Entry</div>
       <form id="entryForm" class="form-grid" onsubmit="return handleSubmit(event)">
@@ -1353,6 +1535,252 @@ function generateAIResponse(question) {
 function refreshAll() {
   updateDashboard();
   renderRecords();
+}
+
+// ==================== File Import ====================
+let importedRows = [];
+let importedHeaders = [];
+
+// Drag & Drop
+const uploadZone = document.getElementById('uploadZone');
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+});
+
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) processFile(file);
+}
+
+function processFile(file) {
+  const ext = file.name.split('.').pop().toLowerCase();
+  const reader = new FileReader();
+
+  if (ext === 'csv') {
+    reader.onload = e => {
+      const text = e.target.result;
+      parseCSV(text);
+    };
+    reader.readAsText(file, 'UTF-8');
+  } else if (ext === 'xlsx' || ext === 'xls') {
+    reader.onload = e => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array', cellDates: true });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const json = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, dateNF: 'yyyy-mm-dd' });
+      if (json.length < 2) { showToast('File is empty or has no data rows'); return; }
+      importedHeaders = json[0].map(h => String(h || '').trim());
+      importedRows = json.slice(1).filter(row => row.some(cell => cell !== undefined && cell !== ''));
+      setupMapping();
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    showToast('Unsupported file format. Use .csv or .xlsx');
+  }
+}
+
+function parseCSV(text) {
+  const lines = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') {
+      if (inQuotes && text[i + 1] === '"') { current += '"'; i++; }
+      else { inQuotes = !inQuotes; }
+    } else if ((ch === ',' || ch === '\t') && !inQuotes) {
+      lines.push(current);
+      current = '';
+      if (ch === '\t' || ch === ',') continue;
+    } else if ((ch === '\n' || ch === '\r') && !inQuotes) {
+      lines.push(current);
+      current = '';
+      if (ch === '\r' && text[i + 1] === '\n') i++;
+      // End of row marker
+      lines.push('__ROW_END__');
+    } else {
+      current += ch;
+    }
+  }
+  if (current) lines.push(current);
+
+  // Build rows from flat cells
+  const rows = [];
+  let row = [];
+  for (const cell of lines) {
+    if (cell === '__ROW_END__') {
+      if (row.length > 0) rows.push(row);
+      row = [];
+    } else {
+      row.push(cell.trim());
+    }
+  }
+  if (row.length > 0) rows.push(row);
+
+  if (rows.length < 2) { showToast('File is empty or has no data rows'); return; }
+  importedHeaders = rows[0];
+  importedRows = rows.slice(1).filter(r => r.some(c => c !== ''));
+  setupMapping();
+}
+
+function setupMapping() {
+  const fields = ['mapAccount','mapRep','mapQuoteDate','mapCloseDate','mapPlan','mapAmount','mapMonths','mapStatus'];
+  const keywords = {
+    mapAccount: ['account','company','client','enterprise','firm','customer','기업','회사','고객','거래처'],
+    mapRep: ['rep','sales','owner','manager','담당','영업','세일즈'],
+    mapQuoteDate: ['quote','견적','제안'],
+    mapCloseDate: ['close','closing','contract','signed','계약','체결','클로징'],
+    mapPlan: ['plan','tier','product','플랜','상품','등급'],
+    mapAmount: ['amount','total','price','revenue','value','금액','매출','계약금','총액','가격'],
+    mapMonths: ['period','month','duration','term','기간','개월'],
+    mapStatus: ['status','stage','state','상태','단계']
+  };
+
+  fields.forEach(fId => {
+    const sel = document.getElementById(fId);
+    sel.innerHTML = '<option value="">-- Skip --</option>';
+    importedHeaders.forEach((h, i) => {
+      sel.innerHTML += `<option value="${i}">${esc(h)}</option>`;
+    });
+
+    // Auto-match by keyword
+    const kws = keywords[fId] || [];
+    const matchIdx = importedHeaders.findIndex(h => {
+      const lower = h.toLowerCase().replace(/[\s_-]/g, '');
+      return kws.some(k => lower.includes(k));
+    });
+    if (matchIdx !== -1) sel.value = String(matchIdx);
+  });
+
+  renderPreview();
+  document.getElementById('mappingArea').style.display = 'block';
+  document.getElementById('importStats').innerHTML =
+    `Total rows: <strong>${importedRows.length}</strong> &nbsp;|&nbsp; Columns: <strong>${importedHeaders.length}</strong>`;
+}
+
+function renderPreview() {
+  const preview = importedRows.slice(0, 5);
+  let html = '<table><thead><tr>';
+  importedHeaders.forEach(h => { html += `<th>${esc(h)}</th>`; });
+  html += '</tr></thead><tbody>';
+  preview.forEach(row => {
+    html += '<tr>';
+    importedHeaders.forEach((_, i) => { html += `<td>${esc(String(row[i] || ''))}</td>`; });
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById('previewTable').innerHTML = html;
+}
+
+function cancelImport() {
+  document.getElementById('mappingArea').style.display = 'none';
+  document.getElementById('fileInput').value = '';
+  importedRows = [];
+  importedHeaders = [];
+}
+
+function executeImport() {
+  const mapAccount = document.getElementById('mapAccount').value;
+  const mapRep = document.getElementById('mapRep').value;
+  const mapQuoteDate = document.getElementById('mapQuoteDate').value;
+  const mapCloseDate = document.getElementById('mapCloseDate').value;
+  const mapPlan = document.getElementById('mapPlan').value;
+  const mapAmount = document.getElementById('mapAmount').value;
+  const mapMonths = document.getElementById('mapMonths').value;
+  const mapStatus = document.getElementById('mapStatus').value;
+
+  if (mapAccount === '' || mapRep === '' || mapAmount === '') {
+    showToast('Account Name, Sales Rep, and Total Amount are required');
+    return;
+  }
+
+  const data = loadData();
+  const today = new Date().toISOString().split('T')[0];
+  let imported = 0;
+  let skipped = 0;
+
+  importedRows.forEach(row => {
+    const account = String(row[Number(mapAccount)] || '').trim();
+    const rep = String(row[Number(mapRep)] || '').trim();
+    const rawAmount = String(row[Number(mapAmount)] || '').trim();
+
+    if (!account || !rep || !rawAmount) { skipped++; return; }
+
+    const amount = Number(rawAmount.replace(/[^0-9.-]/g, ''));
+    if (isNaN(amount) || amount <= 0) { skipped++; return; }
+
+    let quoteDate = mapQuoteDate !== '' ? parseDate(row[Number(mapQuoteDate)]) : today;
+    let closeDate = mapCloseDate !== '' ? parseDate(row[Number(mapCloseDate)]) : today;
+    let plan = mapPlan !== '' ? String(row[Number(mapPlan)] || 'Basic').trim() : 'Basic';
+    let months = mapMonths !== '' ? Number(String(row[Number(mapMonths)] || '12').replace(/[^0-9]/g, '')) : 12;
+    let status = mapStatus !== '' ? normalizeStatus(String(row[Number(mapStatus)] || '')) : 'Closed-won';
+
+    if (!quoteDate) quoteDate = today;
+    if (!closeDate) closeDate = today;
+    if (months <= 0) months = 12;
+    if (!['Basic','Pro','Enterprise'].includes(plan)) {
+      const pl = plan.toLowerCase();
+      if (pl.includes('pro')) plan = 'Pro';
+      else if (pl.includes('enter') || pl.includes('ent')) plan = 'Enterprise';
+      else plan = 'Basic';
+    }
+
+    data.push({
+      id: Date.now().toString() + Math.random().toString(36).slice(2, 6),
+      account, rep, quoteDate, closeDate, plan, amount, months, status
+    });
+    imported++;
+  });
+
+  saveData(data);
+  cancelImport();
+  refreshAll();
+  showToast(`${imported} records imported` + (skipped > 0 ? `, ${skipped} skipped` : ''));
+}
+
+function parseDate(val) {
+  if (!val) return '';
+  const s = String(val).trim();
+
+  // Try ISO format (YYYY-MM-DD)
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0, 10);
+
+  // Try YYYY/MM/DD
+  if (/^\d{4}\/\d{1,2}\/\d{1,2}/.test(s)) {
+    const [y, m, d] = s.split('/');
+    return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+  }
+
+  // Try MM/DD/YYYY or DD/MM/YYYY (assume MM/DD/YYYY)
+  if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(s)) {
+    const [a, b, y] = s.split('/');
+    return `${y}-${a.padStart(2,'0')}-${b.padStart(2,'0')}`;
+  }
+
+  // Try YYYY.MM.DD (Korean common format)
+  if (/^\d{4}\.\d{1,2}\.\d{1,2}/.test(s)) {
+    const [y, m, d] = s.split('.');
+    return `${y}-${m.trim().padStart(2,'0')}-${d.trim().padStart(2,'0')}`;
+  }
+
+  // Try Date object
+  const d = new Date(s);
+  if (!isNaN(d.getTime())) return d.toISOString().split('T')[0];
+
+  return '';
+}
+
+function normalizeStatus(val) {
+  const v = val.toLowerCase().replace(/[\s_-]/g, '');
+  if (v.includes('won') || v.includes('closed') || v.includes('close') || v.includes('완료') || v.includes('체결') || v.includes('클로징')) return 'Closed-won';
+  return 'Opportunity';
 }
 
 // ==================== Init ====================
