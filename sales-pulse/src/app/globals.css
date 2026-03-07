@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+}
+
+@theme inline {
+  --color-background: #F8F9FC;
+  --color-foreground: #111827;
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
