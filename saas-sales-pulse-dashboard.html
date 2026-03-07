@@ -138,10 +138,11 @@
   }
 
   .kpi-value {
-    font-size: 28px;
+    font-size: 22px;
     font-weight: 700;
     color: var(--text-primary);
-    line-height: 1.1;
+    line-height: 1.2;
+    word-break: keep-all;
   }
 
   .kpi-sub {
@@ -492,6 +493,52 @@
     background: var(--border);
   }
 
+  /* Date Filter */
+  .date-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .date-filter-bar label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .date-filter-bar input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    color: var(--text-primary);
+  }
+
+  .date-filter-bar input[type="date"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-light);
+  }
+
+  .date-preset {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .date-preset:hover { border-color: var(--accent); color: var(--accent); }
+  .date-preset.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
   /* Toast */
   .toast {
     position: fixed;
@@ -546,25 +593,37 @@
 
   <!-- Dashboard Page -->
   <div id="page-dashboard" class="page active">
+    <div class="date-filter-bar">
+      <label>Period:</label>
+      <input type="date" id="filterDateFrom" onchange="onDateFilterChange()">
+      <span style="color:var(--text-secondary);">~</span>
+      <input type="date" id="filterDateTo" onchange="onDateFilterChange()">
+      <button class="date-preset" onclick="setDatePreset('all')">All</button>
+      <button class="date-preset" onclick="setDatePreset('thisMonth')">This Month</button>
+      <button class="date-preset" onclick="setDatePreset('lastMonth')">Last Month</button>
+      <button class="date-preset" onclick="setDatePreset('thisQuarter')">This Quarter</button>
+      <button class="date-preset" onclick="setDatePreset('thisYear')">This Year</button>
+      <button class="date-preset" onclick="setDatePreset('lastYear')">Last Year</button>
+    </div>
     <div class="kpi-grid">
       <div class="kpi-card accent">
         <div class="kpi-label">Total ARR</div>
-        <div class="kpi-value" id="kpiARR">&#8361;0</div>
+        <div class="kpi-value" id="kpiARR">0 won</div>
         <div class="kpi-sub" id="kpiARRSub">0 Closed contracts</div>
       </div>
       <div class="kpi-card green">
         <div class="kpi-label">Current MRR</div>
-        <div class="kpi-value" id="kpiMRR">&#8361;0</div>
+        <div class="kpi-value" id="kpiMRR">0 won</div>
         <div class="kpi-sub">Closed monthly recurring</div>
       </div>
       <div class="kpi-card orange">
         <div class="kpi-label">New Expected MRR</div>
-        <div class="kpi-value" id="kpiNewMRR">&#8361;0</div>
+        <div class="kpi-value" id="kpiNewMRR">0 won</div>
         <div class="kpi-sub" id="kpiNewMRRSub">Pipeline MRR (Forecasting A)</div>
       </div>
       <div class="kpi-card blue">
         <div class="kpi-label">Total Projected MRR</div>
-        <div class="kpi-value" id="kpiProjMRR">&#8361;0</div>
+        <div class="kpi-value" id="kpiProjMRR">0 won</div>
         <div class="kpi-sub">Closed + Pipeline (Forecasting B)</div>
       </div>
     </div>
@@ -832,13 +891,9 @@ document.querySelectorAll('.nav-tab').forEach(tab => {
 });
 
 // ==================== Format ====================
-function fmtKRW(n) {
-  if (n >= 1e8) return '\u20A9' + (n / 1e8).toFixed(1) + '\uC5B5';
-  if (n >= 1e4) return '\u20A9' + (n / 1e4).toFixed(0) + '\uB9CC';
-  return '\u20A9' + n.toLocaleString('ko-KR');
-}
+function fmtKRW(n) { return Number(n).toLocaleString('ko-KR') + ' \uC6D0'; }
 
-function fmtFull(n) { return '\u20A9' + Number(n).toLocaleString('ko-KR'); }
+function fmtFull(n) { return Number(n).toLocaleString('ko-KR') + ' \uC6D0'; }
 
 function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
@@ -977,9 +1032,77 @@ function renderRecords() {
   }).join('');
 }
 
+// ==================== Date Filter ====================
+let activePreset = 'all';
+
+function getFilteredData() {
+  const data = loadData();
+  const from = document.getElementById('filterDateFrom').value;
+  const to = document.getElementById('filterDateTo').value;
+  if (!from && !to) return data;
+  return data.filter(d => {
+    const date = d.closeDate;
+    if (from && date < from) return false;
+    if (to && date > to) return false;
+    return true;
+  });
+}
+
+function onDateFilterChange() {
+  activePreset = '';
+  document.querySelectorAll('.date-preset').forEach(b => b.classList.remove('active'));
+  refreshAll();
+}
+
+function setDatePreset(preset) {
+  activePreset = preset;
+  document.querySelectorAll('.date-preset').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = now.getMonth();
+  let from = '', to = '';
+
+  switch (preset) {
+    case 'all':
+      from = ''; to = '';
+      break;
+    case 'thisMonth':
+      from = `${y}-${String(m + 1).padStart(2, '0')}-01`;
+      to = new Date(y, m + 1, 0).toISOString().split('T')[0];
+      break;
+    case 'lastMonth': {
+      const lm = m === 0 ? 11 : m - 1;
+      const ly = m === 0 ? y - 1 : y;
+      from = `${ly}-${String(lm + 1).padStart(2, '0')}-01`;
+      to = new Date(ly, lm + 1, 0).toISOString().split('T')[0];
+      break;
+    }
+    case 'thisQuarter': {
+      const qStart = Math.floor(m / 3) * 3;
+      from = `${y}-${String(qStart + 1).padStart(2, '0')}-01`;
+      to = new Date(y, qStart + 3, 0).toISOString().split('T')[0];
+      break;
+    }
+    case 'thisYear':
+      from = `${y}-01-01`;
+      to = `${y}-12-31`;
+      break;
+    case 'lastYear':
+      from = `${y - 1}-01-01`;
+      to = `${y - 1}-12-31`;
+      break;
+  }
+
+  document.getElementById('filterDateFrom').value = from;
+  document.getElementById('filterDateTo').value = to;
+  refreshAll();
+}
+
 // ==================== Dashboard ====================
 function updateDashboard() {
-  const data = loadData();
+  const data = getFilteredData();
   const closed = data.filter(d => d.status === 'Closed');
   const pipeline = data.filter(d => d.status === 'In Progress');
 
@@ -1498,6 +1621,8 @@ function init() {
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('fQuoteDate').value = today;
   document.getElementById('fCloseDate').value = today;
+  // Set "All" preset active
+  document.querySelector('.date-preset').classList.add('active');
   refreshAll();
 }
 
