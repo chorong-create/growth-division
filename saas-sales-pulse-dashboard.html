@@ -25,6 +25,8 @@
     --orange-light: #FFFBEB;
     --red: #EF4444;
     --red-light: #FEF2F2;
+    --blue: #3B82F6;
+    --blue-light: #EFF6FF;
     --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
     --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
     --radius: 12px;
@@ -66,10 +68,7 @@
 
   .nav-logo span { color: var(--text-primary); }
 
-  .nav-tabs {
-    display: flex;
-    gap: 4px;
-  }
+  .nav-tabs { display: flex; gap: 4px; }
 
   .nav-tab {
     padding: 8px 16px;
@@ -86,38 +85,6 @@
 
   .nav-tab:hover { background: var(--surface); color: var(--text-primary); }
   .nav-tab.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
-
-  .nav-right {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .target-badge {
-    font-size: 13px;
-    color: var(--text-secondary);
-    background: var(--surface);
-    padding: 6px 12px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-  }
-
-  .target-badge strong { color: var(--accent); }
-
-  .btn-set-target {
-    padding: 6px 12px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    font-family: inherit;
-    font-size: 13px;
-    cursor: pointer;
-    color: var(--text-secondary);
-    transition: all 0.15s;
-  }
-
-  .btn-set-target:hover { border-color: var(--accent); color: var(--accent); }
 
   /* Main */
   .main {
@@ -147,10 +114,10 @@
     margin-bottom: 16px;
   }
 
-  /* Dashboard */
+  /* KPI Grid */
   .kpi-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 16px;
     margin-bottom: 24px;
   }
@@ -171,7 +138,7 @@
   }
 
   .kpi-value {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 700;
     color: var(--text-primary);
     line-height: 1.1;
@@ -184,12 +151,15 @@
   }
 
   .kpi-card.accent { border-left: 4px solid var(--accent); }
-  .kpi-card.green { border-left: 4px solid var(--green); }
-  .kpi-card.orange { border-left: 4px solid var(--orange); }
-
   .kpi-card.accent .kpi-value { color: var(--accent); }
+  .kpi-card.green { border-left: 4px solid var(--green); }
   .kpi-card.green .kpi-value { color: var(--green); }
+  .kpi-card.orange { border-left: 4px solid var(--orange); }
+  .kpi-card.orange .kpi-value { color: var(--orange); }
+  .kpi-card.blue { border-left: 4px solid var(--blue); }
+  .kpi-card.blue .kpi-value { color: var(--blue); }
 
+  /* Charts */
   .charts-grid {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -199,11 +169,8 @@
 
   .chart-container { position: relative; height: 320px; }
 
-  .top-reps {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
+  /* Top Reps */
+  .top-reps { display: flex; flex-direction: column; gap: 12px; }
 
   .rep-item {
     display: flex;
@@ -215,26 +182,18 @@
   }
 
   .rep-rank {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--accent-light);
-    color: var(--accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 700;
-    flex-shrink: 0;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent-light); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
   }
 
   .rep-rank.gold { background: #FEF3C7; color: #D97706; }
-
   .rep-info { flex: 1; min-width: 0; }
   .rep-name { font-size: 14px; font-weight: 600; }
   .rep-amount { font-size: 13px; color: var(--text-secondary); }
 
-  /* Data Entry Form */
+  /* Form */
   .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -244,11 +203,7 @@
   .form-group { display: flex; flex-direction: column; gap: 6px; }
   .form-group.full { grid-column: 1 / -1; }
 
-  .form-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-secondary);
-  }
+  .form-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
 
   .form-input, .form-select {
     padding: 10px 14px;
@@ -286,36 +241,16 @@
     transition: all 0.15s;
   }
 
-  .btn-primary {
-    background: var(--accent);
-    color: #fff;
-  }
-
+  .btn-primary { background: var(--accent); color: #fff; }
   .btn-primary:hover { background: #4338CA; }
-
-  .btn-secondary {
-    background: var(--surface);
-    color: var(--text-secondary);
-    border: 1px solid var(--border);
-  }
-
+  .btn-secondary { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); }
   .btn-secondary:hover { background: var(--border); }
-
-  .btn-danger {
-    background: var(--red-light);
-    color: var(--red);
-    border: 1px solid transparent;
-  }
-
+  .btn-danger { background: var(--red-light); color: var(--red); border: 1px solid transparent; }
   .btn-danger:hover { background: #FEE2E2; }
-
   .btn-sm { padding: 6px 12px; font-size: 13px; }
 
-  /* Records Table */
-  .table-wrapper {
-    overflow-x: auto;
-    margin-top: 16px;
-  }
+  /* Table */
+  .table-wrapper { overflow-x: auto; margin-top: 16px; }
 
   .table-controls {
     display: flex;
@@ -335,20 +270,13 @@
     outline: none;
   }
 
-  .search-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-light);
-  }
+  .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
 
   th {
     text-align: left;
-    padding: 12px 16px;
+    padding: 12px 14px;
     font-size: 12px;
     font-weight: 600;
     color: var(--text-secondary);
@@ -360,7 +288,7 @@
   }
 
   td {
-    padding: 12px 16px;
+    padding: 12px 14px;
     border-bottom: 1px solid var(--border);
     white-space: nowrap;
   }
@@ -378,15 +306,21 @@
   .status-badge.won { background: var(--green-light); color: var(--green); }
   .status-badge.opportunity { background: var(--orange-light); color: var(--orange); }
 
-  .empty-state {
-    text-align: center;
-    padding: 60px 24px;
-    color: var(--text-secondary);
+  .type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
   }
 
+  .type-badge.new-type { background: var(--blue-light); color: var(--blue); }
+  .type-badge.renew-type { background: var(--accent-light); color: var(--accent); }
+
+  .empty-state { text-align: center; padding: 60px 24px; color: var(--text-secondary); }
   .empty-state p { font-size: 15px; margin-top: 8px; }
 
-  /* AI Chat */
+  /* Chat */
   .chat-container {
     display: flex;
     flex-direction: column;
@@ -403,36 +337,19 @@
     gap: 16px;
   }
 
-  .chat-msg {
-    display: flex;
-    gap: 12px;
-    max-width: 85%;
-  }
-
+  .chat-msg { display: flex; gap: 12px; max-width: 85%; }
   .chat-msg.user { align-self: flex-end; flex-direction: row-reverse; }
 
   .chat-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 700;
-    flex-shrink: 0;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; flex-shrink: 0;
   }
 
   .chat-msg.ai .chat-avatar { background: var(--accent-light); color: var(--accent); }
   .chat-msg.user .chat-avatar { background: var(--green-light); color: var(--green); }
 
-  .chat-bubble {
-    padding: 12px 16px;
-    border-radius: 12px;
-    font-size: 14px;
-    line-height: 1.6;
-  }
-
+  .chat-bubble { padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.6; }
   .chat-msg.ai .chat-bubble { background: var(--surface); border: 1px solid var(--border); }
   .chat-msg.user .chat-bubble { background: var(--accent); color: #fff; }
 
@@ -459,29 +376,15 @@
   .chat-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
 
   .btn-send {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    border: none;
-    background: var(--accent);
-    color: #fff;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: background 0.15s;
+    width: 44px; height: 44px; border-radius: 10px; border: none;
+    background: var(--accent); color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background 0.15s;
   }
 
   .btn-send:hover { background: #4338CA; }
-  .btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  .quick-questions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
+  .quick-questions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 
   .quick-q {
     padding: 8px 14px;
@@ -497,73 +400,8 @@
 
   .quick-q:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
-  /* Modal */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .modal-overlay.active { display: flex; }
-
-  .modal {
-    background: var(--bg);
-    border-radius: var(--radius);
-    padding: 24px;
-    width: 400px;
-    max-width: 90vw;
-    box-shadow: var(--shadow-md);
-  }
-
-  .modal h3 { font-size: 16px; margin-bottom: 16px; }
-
-  .modal .form-group { margin-bottom: 12px; }
-
-  .modal .form-actions { margin-top: 16px; }
-
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    padding: 12px 20px;
-    border-radius: 10px;
-    background: var(--text-primary);
-    color: #fff;
-    font-size: 14px;
-    font-weight: 500;
-    box-shadow: var(--shadow-md);
-    transform: translateY(80px);
-    opacity: 0;
-    transition: all 0.3s;
-    z-index: 300;
-  }
-
-  .toast.show { transform: translateY(0); opacity: 1; }
-
-  /* Progress bar */
-  .progress-bar {
-    height: 8px;
-    background: var(--surface);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 12px;
-  }
-
-  .progress-fill {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 0.5s ease;
-  }
-
   /* File Upload */
-  .upload-section {
-    margin-bottom: 24px;
-  }
+  .upload-section { margin-bottom: 24px; }
 
   .upload-zone {
     border: 2px dashed var(--border);
@@ -580,29 +418,12 @@
     background: var(--accent-light);
   }
 
-  .upload-zone-icon {
-    font-size: 36px;
-    margin-bottom: 12px;
-    color: var(--text-secondary);
-  }
-
-  .upload-zone-text {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--text-primary);
-    margin-bottom: 4px;
-  }
-
-  .upload-zone-sub {
-    font-size: 13px;
-    color: var(--text-secondary);
-  }
-
+  .upload-zone-icon { font-size: 36px; margin-bottom: 12px; color: var(--text-secondary); }
+  .upload-zone-text { font-size: 15px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+  .upload-zone-sub { font-size: 13px; color: var(--text-secondary); }
   .upload-zone input[type="file"] { display: none; }
 
-  .mapping-section {
-    margin-top: 16px;
-  }
+  .mapping-section { margin-top: 16px; }
 
   .mapping-grid {
     display: grid;
@@ -611,17 +432,13 @@
     margin-top: 12px;
   }
 
-  .mapping-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .mapping-item { display: flex; align-items: center; gap: 8px; }
 
   .mapping-label {
     font-size: 13px;
     font-weight: 600;
     color: var(--text-secondary);
-    min-width: 120px;
+    min-width: 130px;
   }
 
   .mapping-select {
@@ -675,18 +492,38 @@
     background: var(--border);
   }
 
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 20px;
+    border-radius: 10px;
+    background: var(--text-primary);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow-md);
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 300;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+
   /* Responsive */
   @media (max-width: 768px) {
     .nav-inner { padding: 0 16px; }
     .nav-logo { margin-right: 16px; font-size: 16px; }
     .nav-tab { padding: 6px 10px; font-size: 13px; }
     .main { padding: 16px; }
-    .kpi-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
     .charts-grid { grid-template-columns: 1fr; }
     .form-grid { grid-template-columns: 1fr; }
-    .target-badge { display: none; }
     .search-input { width: 100%; }
     .table-controls { flex-direction: column; align-items: stretch; }
+    .mapping-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -702,10 +539,6 @@
       <button class="nav-tab" data-page="records">Records</button>
       <button class="nav-tab" data-page="ai">AI Insight</button>
     </div>
-    <div class="nav-right">
-      <div class="target-badge">Target ARR: <strong id="navTarget">-</strong></div>
-      <button class="btn-set-target" onclick="openTargetModal()">Set Target</button>
-    </div>
   </div>
 </nav>
 
@@ -717,23 +550,22 @@
       <div class="kpi-card accent">
         <div class="kpi-label">Total ARR</div>
         <div class="kpi-value" id="kpiARR">&#8361;0</div>
-        <div class="kpi-sub" id="kpiARRSub">Closed-Won contracts</div>
+        <div class="kpi-sub" id="kpiARRSub">0 Closed contracts</div>
       </div>
       <div class="kpi-card green">
         <div class="kpi-label">Current MRR</div>
         <div class="kpi-value" id="kpiMRR">&#8361;0</div>
-        <div class="kpi-sub">Monthly Recurring Revenue</div>
+        <div class="kpi-sub">Closed monthly recurring</div>
       </div>
       <div class="kpi-card orange">
-        <div class="kpi-label">Target Achievement</div>
-        <div class="kpi-value" id="kpiTarget">0%</div>
-        <div class="progress-bar"><div class="progress-fill" id="kpiProgressFill" style="width:0%; background:var(--orange);"></div></div>
-        <div class="kpi-sub" id="kpiTargetSub">Set a target to track</div>
+        <div class="kpi-label">New Expected MRR</div>
+        <div class="kpi-value" id="kpiNewMRR">&#8361;0</div>
+        <div class="kpi-sub" id="kpiNewMRRSub">Pipeline MRR (Forecasting A)</div>
       </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Pipeline (Opportunity)</div>
-        <div class="kpi-value" id="kpiPipeline">&#8361;0</div>
-        <div class="kpi-sub" id="kpiPipelineSub">In progress</div>
+      <div class="kpi-card blue">
+        <div class="kpi-label">Total Projected MRR</div>
+        <div class="kpi-value" id="kpiProjMRR">&#8361;0</div>
+        <div class="kpi-sub">Closed + Pipeline (Forecasting B)</div>
       </div>
     </div>
 
@@ -743,16 +575,16 @@
         <div class="chart-container"><canvas id="chartTrend"></canvas></div>
       </div>
       <div class="card">
-        <div class="card-title">Top Sales Reps</div>
-        <div id="topReps" class="top-reps">
-          <div class="empty-state" style="padding:24px;"><p>No data yet</p></div>
-        </div>
+        <div class="card-title">New vs Renewal Revenue</div>
+        <div class="chart-container"><canvas id="chartType"></canvas></div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title">Plan Distribution</div>
-      <div class="chart-container" style="height:240px;"><canvas id="chartPlan"></canvas></div>
+      <div class="card-title">Top Sales Reps (Closed)</div>
+      <div id="topReps" class="top-reps">
+        <div class="empty-state" style="padding:24px;"><p>No data yet</p></div>
+      </div>
     </div>
   </div>
 
@@ -768,11 +600,11 @@
         <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" onchange="handleFileSelect(event)">
       </div>
 
-      <!-- Column Mapping (hidden until file loaded) -->
+      <!-- Column Mapping -->
       <div id="mappingArea" style="display:none;">
         <div class="mapping-section">
           <div class="card-title" style="margin-top:20px;">Column Mapping</div>
-          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Match your file columns to the required fields. Leave as "-- Skip --" for optional fields.</p>
+          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Match your file columns to the required fields. Leave "-- Skip --" for optional fields.</p>
           <div class="mapping-grid">
             <div class="mapping-item">
               <span class="mapping-label">Account Name *</span>
@@ -803,13 +635,20 @@
               <select class="mapping-select" id="mapMonths"></select>
             </div>
             <div class="mapping-item">
+              <span class="mapping-label">Duration</span>
+              <select class="mapping-select" id="mapDuration"></select>
+            </div>
+            <div class="mapping-item">
+              <span class="mapping-label">Type (New/Renew)</span>
+              <select class="mapping-select" id="mapType"></select>
+            </div>
+            <div class="mapping-item">
               <span class="mapping-label">Status</span>
               <select class="mapping-select" id="mapStatus"></select>
             </div>
           </div>
         </div>
 
-        <!-- Preview -->
         <div class="card-title" style="margin-top:20px;">Preview (First 5 rows)</div>
         <div class="preview-table-wrapper" id="previewTable"></div>
         <div class="import-stats" id="importStats"></div>
@@ -829,11 +668,11 @@
       <form id="entryForm" class="form-grid" onsubmit="return handleSubmit(event)">
         <input type="hidden" id="editId" value="">
         <div class="form-group">
-          <label class="form-label">Account Name</label>
+          <label class="form-label">Account Name *</label>
           <input type="text" class="form-input" id="fAccount" placeholder="e.g. Acme Corp" required>
         </div>
         <div class="form-group">
-          <label class="form-label">Sales Rep</label>
+          <label class="form-label">Sales Rep *</label>
           <input type="text" class="form-input" id="fRep" placeholder="e.g. Kim" required>
         </div>
         <div class="form-group">
@@ -848,24 +687,39 @@
           <label class="form-label">Plan</label>
           <select class="form-select" id="fPlan" required>
             <option value="">Select plan</option>
+            <option value="Advance">Advance</option>
+            <option value="Professional">Professional</option>
+            <option value="Standard">Standard</option>
             <option value="Basic">Basic</option>
-            <option value="Pro">Pro</option>
-            <option value="Enterprise">Enterprise</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Duration</label>
+          <select class="form-select" id="fDuration" required>
+            <option value="Annual">Annual (yearly)</option>
+            <option value="Monthly">Monthly</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Type</label>
+          <select class="form-select" id="fType" required>
+            <option value="New">New (first contract)</option>
+            <option value="Renewal">Renewal (re-subscribe)</option>
           </select>
         </div>
         <div class="form-group">
           <label class="form-label">Status</label>
           <select class="form-select" id="fStatus" required>
-            <option value="Opportunity">Opportunity (In Progress)</option>
-            <option value="Closed-won">Closed-Won</option>
+            <option value="Closed">Closed (complete)</option>
+            <option value="In Progress">In Progress</option>
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label">Total Amount (&#8361;)</label>
+          <label class="form-label">Total Amount (&#8361;) *</label>
           <input type="number" class="form-input" id="fAmount" placeholder="e.g. 12000000" min="0" required>
         </div>
         <div class="form-group">
-          <label class="form-label">Contract Period (Months)</label>
+          <label class="form-label">Contract Period (Months) *</label>
           <input type="number" class="form-input" id="fMonths" placeholder="e.g. 12" min="1" required>
         </div>
         <div class="form-actions">
@@ -882,11 +736,16 @@
       <div class="card-title">All Records</div>
       <div class="table-controls">
         <input type="text" class="search-input" id="searchInput" placeholder="Search by account, rep, plan..." oninput="renderRecords()">
-        <div style="display:flex;gap:8px;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <select class="form-select" id="filterStatus" onchange="renderRecords()" style="font-size:13px;padding:8px 12px;">
             <option value="all">All Status</option>
-            <option value="Closed-won">Closed-Won</option>
-            <option value="Opportunity">Opportunity</option>
+            <option value="Closed">Closed</option>
+            <option value="In Progress">In Progress</option>
+          </select>
+          <select class="form-select" id="filterType" onchange="renderRecords()" style="font-size:13px;padding:8px 12px;">
+            <option value="all">All Types</option>
+            <option value="New">New</option>
+            <option value="Renewal">Renewal</option>
           </select>
           <button class="btn btn-danger btn-sm" onclick="clearAllData()">Clear All</button>
         </div>
@@ -898,6 +757,8 @@
               <th>Account</th>
               <th>Rep</th>
               <th>Plan</th>
+              <th>Duration</th>
+              <th>Type</th>
               <th>Total Amount</th>
               <th>Period</th>
               <th>MRR</th>
@@ -922,23 +783,23 @@
       <div class="card-title">AI Sales Insight Assistant</div>
       <div class="quick-questions">
         <button class="quick-q" onclick="askQuick(this.textContent)">Best performer this month?</button>
+        <button class="quick-q" onclick="askQuick(this.textContent)">New vs Renewal breakdown?</button>
         <button class="quick-q" onclick="askQuick(this.textContent)">Next month forecast?</button>
-        <button class="quick-q" onclick="askQuick(this.textContent)">Can we hit the annual target?</button>
         <button class="quick-q" onclick="askQuick(this.textContent)">Pipeline summary</button>
-        <button class="quick-q" onclick="askQuick(this.textContent)">Plan distribution analysis</button>
+        <button class="quick-q" onclick="askQuick(this.textContent)">Annual/Monthly subscription ratio?</button>
       </div>
       <div class="chat-messages" id="chatMessages">
         <div class="chat-msg ai">
           <div class="chat-avatar">AI</div>
           <div class="chat-bubble">
-            Welcome! I'm your AI Sales Insight assistant. I can analyze your sales data and provide forecasts.<br><br>
-            Try asking me about performance, forecasts, or trends.
+            Welcome! I analyze your SaaS sales data including new vs renewal contracts, subscription types, and provide forecasts.<br><br>
+            Try asking about performance, forecasts, or subscription trends.
           </div>
         </div>
       </div>
       <div class="chat-input-area">
         <textarea class="chat-input" id="chatInput" placeholder="Ask about your sales data..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
-        <button class="btn-send" onclick="sendChat()" id="btnSend">
+        <button class="btn-send" onclick="sendChat()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
         </button>
       </div>
@@ -946,45 +807,19 @@
   </div>
 </main>
 
-<!-- Target Modal -->
-<div class="modal-overlay" id="targetModal">
-  <div class="modal">
-    <h3>Set Monthly ARR Target</h3>
-    <div class="form-group">
-      <label class="form-label">Target ARR (&#8361;)</label>
-      <input type="number" class="form-input" id="targetInput" placeholder="e.g. 100000000" min="0">
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-secondary" onclick="closeTargetModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveTarget()">Save</button>
-    </div>
-  </div>
-</div>
-
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
 // ==================== State ====================
-const DB_KEY = 'salesPulseData';
-const TARGET_KEY = 'salesPulseTarget';
+const DB_KEY = 'salesPulseData_v2';
 
 function loadData() {
   try { return JSON.parse(localStorage.getItem(DB_KEY)) || []; }
   catch { return []; }
 }
 
-function saveData(data) {
-  localStorage.setItem(DB_KEY, JSON.stringify(data));
-}
-
-function getTarget() {
-  return Number(localStorage.getItem(TARGET_KEY)) || 0;
-}
-
-function setTarget(v) {
-  localStorage.setItem(TARGET_KEY, String(v));
-}
+function saveData(data) { localStorage.setItem(DB_KEY, JSON.stringify(data)); }
 
 // ==================== Navigation ====================
 document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -998,14 +833,14 @@ document.querySelectorAll('.nav-tab').forEach(tab => {
 
 // ==================== Format ====================
 function fmtKRW(n) {
-  if (n >= 1e8) return '₩' + (n / 1e8).toFixed(1) + '억';
-  if (n >= 1e4) return '₩' + (n / 1e4).toFixed(0) + '만';
-  return '₩' + n.toLocaleString('ko-KR');
+  if (n >= 1e8) return '\u20A9' + (n / 1e8).toFixed(1) + '\uC5B5';
+  if (n >= 1e4) return '\u20A9' + (n / 1e4).toFixed(0) + '\uB9CC';
+  return '\u20A9' + n.toLocaleString('ko-KR');
 }
 
-function fmtFull(n) {
-  return '₩' + Number(n).toLocaleString('ko-KR');
-}
+function fmtFull(n) { return '\u20A9' + Number(n).toLocaleString('ko-KR'); }
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
 // ==================== Form / CRUD ====================
 function handleSubmit(e) {
@@ -1020,6 +855,8 @@ function handleSubmit(e) {
     quoteDate: document.getElementById('fQuoteDate').value,
     closeDate: document.getElementById('fCloseDate').value,
     plan: document.getElementById('fPlan').value,
+    duration: document.getElementById('fDuration').value,
+    type: document.getElementById('fType').value,
     amount: Number(document.getElementById('fAmount').value),
     months: Number(document.getElementById('fMonths').value),
     status: document.getElementById('fStatus').value,
@@ -1043,6 +880,9 @@ function resetForm() {
   document.getElementById('entryForm').reset();
   document.getElementById('editId').value = '';
   document.getElementById('submitBtn').textContent = 'Save Contract';
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('fQuoteDate').value = today;
+  document.getElementById('fCloseDate').value = today;
 }
 
 function editRecord(id) {
@@ -1056,12 +896,13 @@ function editRecord(id) {
   document.getElementById('fQuoteDate').value = r.quoteDate;
   document.getElementById('fCloseDate').value = r.closeDate;
   document.getElementById('fPlan').value = r.plan;
+  document.getElementById('fDuration').value = r.duration || 'Annual';
+  document.getElementById('fType').value = r.type || 'New';
   document.getElementById('fAmount').value = r.amount;
   document.getElementById('fMonths').value = r.months;
   document.getElementById('fStatus').value = r.status;
   document.getElementById('submitBtn').textContent = 'Update Contract';
 
-  // Switch to entry page
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelector('[data-page="entry"]').classList.add('active');
@@ -1087,18 +928,18 @@ function clearAllData() {
 function renderRecords() {
   let data = loadData();
   const search = document.getElementById('searchInput').value.toLowerCase();
-  const status = document.getElementById('filterStatus').value;
+  const statusF = document.getElementById('filterStatus').value;
+  const typeF = document.getElementById('filterType').value;
 
   if (search) {
     data = data.filter(d =>
       d.account.toLowerCase().includes(search) ||
       d.rep.toLowerCase().includes(search) ||
-      d.plan.toLowerCase().includes(search)
+      (d.plan || '').toLowerCase().includes(search)
     );
   }
-  if (status !== 'all') {
-    data = data.filter(d => d.status === status);
-  }
+  if (statusF !== 'all') data = data.filter(d => d.status === statusF);
+  if (typeF !== 'all') data = data.filter(d => d.type === typeF);
 
   const tbody = document.getElementById('recordsBody');
   const empty = document.getElementById('recordsEmpty');
@@ -1112,12 +953,16 @@ function renderRecords() {
   empty.style.display = 'none';
   tbody.innerHTML = data.map(d => {
     const mrr = d.amount / d.months;
-    const statusClass = d.status === 'Closed-won' ? 'won' : 'opportunity';
-    const statusLabel = d.status === 'Closed-won' ? 'Closed-Won' : 'Opportunity';
+    const statusClass = d.status === 'Closed' ? 'won' : 'opportunity';
+    const statusLabel = d.status === 'Closed' ? 'Closed' : 'In Progress';
+    const typeClass = d.type === 'New' ? 'new-type' : 'renew-type';
+    const typeLabel = d.type === 'New' ? 'New' : 'Renewal';
     return `<tr>
       <td><strong>${esc(d.account)}</strong></td>
       <td>${esc(d.rep)}</td>
-      <td>${d.plan}</td>
+      <td>${d.plan || '-'}</td>
+      <td>${d.duration || '-'}</td>
+      <td><span class="type-badge ${typeClass}">${typeLabel}</span></td>
       <td>${fmtFull(d.amount)}</td>
       <td>${d.months}mo</td>
       <td>${fmtFull(Math.round(mrr))}</td>
@@ -1132,59 +977,38 @@ function renderRecords() {
   }).join('');
 }
 
-function esc(s) {
-  const d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
-}
-
-// ==================== Dashboard KPIs ====================
+// ==================== Dashboard ====================
 function updateDashboard() {
   const data = loadData();
-  const won = data.filter(d => d.status === 'Closed-won');
-  const opp = data.filter(d => d.status === 'Opportunity');
+  const closed = data.filter(d => d.status === 'Closed');
+  const pipeline = data.filter(d => d.status === 'In Progress');
 
-  // Total ARR = sum of all total amounts for Closed-won
-  const totalARR = won.reduce((s, d) => s + d.amount, 0);
+  // Total ARR = sum of total amounts for Closed
+  const totalARR = closed.reduce((s, d) => s + d.amount, 0);
 
-  // Current MRR = sum of (amount / months) for Closed-won
-  const totalMRR = won.reduce((s, d) => s + d.amount / d.months, 0);
+  // Current MRR = sum of (amount / months) for Closed
+  const currentMRR = closed.reduce((s, d) => s + d.amount / d.months, 0);
 
-  // Pipeline
-  const pipeline = opp.reduce((s, d) => s + d.amount, 0);
+  // Forecasting A: MRR sum of In Progress
+  const newExpectedMRR = pipeline.reduce((s, d) => s + d.amount / d.months, 0);
 
-  // Target
-  const target = getTarget();
-  const achievement = target > 0 ? (totalARR / target) * 100 : 0;
+  // Forecasting B: Current MRR + New Expected MRR
+  const projectedMRR = currentMRR + newExpectedMRR;
 
   document.getElementById('kpiARR').textContent = fmtKRW(totalARR);
-  document.getElementById('kpiARRSub').textContent = `${won.length} Closed-Won contracts`;
-  document.getElementById('kpiMRR').textContent = fmtKRW(Math.round(totalMRR));
-  document.getElementById('kpiPipeline').textContent = fmtKRW(pipeline);
-  document.getElementById('kpiPipelineSub').textContent = `${opp.length} opportunities in progress`;
+  document.getElementById('kpiARRSub').textContent = `${closed.length} closed contracts`;
+  document.getElementById('kpiMRR').textContent = fmtKRW(Math.round(currentMRR));
+  document.getElementById('kpiNewMRR').textContent = fmtKRW(Math.round(newExpectedMRR));
+  document.getElementById('kpiNewMRRSub').textContent = `${pipeline.length} opportunities (Forecasting A)`;
+  document.getElementById('kpiProjMRR').textContent = fmtKRW(Math.round(projectedMRR));
 
-  if (target > 0) {
-    document.getElementById('kpiTarget').textContent = achievement.toFixed(1) + '%';
-    document.getElementById('kpiTargetSub').textContent = `Target: ${fmtKRW(target)}`;
-    const pct = Math.min(achievement, 100);
-    const fill = document.getElementById('kpiProgressFill');
-    fill.style.width = pct + '%';
-    fill.style.background = achievement >= 100 ? 'var(--green)' : achievement >= 60 ? 'var(--orange)' : 'var(--red)';
-  } else {
-    document.getElementById('kpiTarget').textContent = '-';
-    document.getElementById('kpiTargetSub').textContent = 'Set a target to track';
-    document.getElementById('kpiProgressFill').style.width = '0%';
-  }
-
-  document.getElementById('navTarget').textContent = target > 0 ? fmtKRW(target) : '-';
-
-  updateTopReps(won);
+  updateTopReps(closed);
   updateCharts(data);
 }
 
-function updateTopReps(won) {
+function updateTopReps(closed) {
   const repMap = {};
-  won.forEach(d => {
+  closed.forEach(d => {
     repMap[d.rep] = (repMap[d.rep] || 0) + d.amount;
   });
 
@@ -1209,82 +1033,72 @@ function updateTopReps(won) {
 
 // ==================== Charts ====================
 let trendChart = null;
-let planChart = null;
+let typeChart = null;
 
 function updateCharts(data) {
-  const won = data.filter(d => d.status === 'Closed-won');
+  const closed = data.filter(d => d.status === 'Closed');
 
-  // Monthly trend (by closing date)
+  // === Monthly Trend (by closing date) ===
   const monthMap = {};
-  won.forEach(d => {
-    const m = d.closeDate.substring(0, 7); // YYYY-MM
-    monthMap[m] = (monthMap[m] || 0) + d.amount;
+  closed.forEach(d => {
+    const m = d.closeDate.substring(0, 7);
+    if (!monthMap[m]) monthMap[m] = { newAmt: 0, renewAmt: 0 };
+    if (d.type === 'Renewal') monthMap[m].renewAmt += d.amount;
+    else monthMap[m].newAmt += d.amount;
   });
 
   const months = Object.keys(monthMap).sort();
-  const values = months.map(m => monthMap[m]);
+  const newValues = months.map(m => monthMap[m].newAmt);
+  const renewValues = months.map(m => monthMap[m].renewAmt);
 
   if (trendChart) trendChart.destroy();
   trendChart = new Chart(document.getElementById('chartTrend'), {
     type: 'bar',
     data: {
       labels: months.map(m => { const [y, mo] = m.split('-'); return `${mo}/${y.slice(2)}`; }),
-      datasets: [{
-        label: 'Closed-Won Revenue',
-        data: values,
-        backgroundColor: 'rgba(79, 70, 229, 0.15)',
-        borderColor: '#4F46E5',
-        borderWidth: 2,
-        borderRadius: 6,
-        barPercentage: 0.6,
-      }]
+      datasets: [
+        {
+          label: 'New',
+          data: newValues,
+          backgroundColor: 'rgba(59, 130, 246, 0.7)',
+          borderRadius: 4,
+          barPercentage: 0.6,
+        },
+        {
+          label: 'Renewal',
+          data: renewValues,
+          backgroundColor: 'rgba(79, 70, 229, 0.5)',
+          borderRadius: 4,
+          barPercentage: 0.6,
+        }
+      ]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: ctx => fmtFull(ctx.raw)
-          }
-        }
+        legend: { position: 'top', labels: { font: { family: 'Pretendard', size: 12 } } },
+        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${fmtFull(ctx.raw)}` } }
       },
       scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            callback: v => fmtKRW(v),
-            font: { family: 'Pretendard' }
-          },
-          grid: { color: '#F3F4F6' }
-        },
-        x: {
-          grid: { display: false },
-          ticks: { font: { family: 'Pretendard' } }
-        }
+        x: { stacked: true, grid: { display: false }, ticks: { font: { family: 'Pretendard' } } },
+        y: { stacked: true, beginAtZero: true, ticks: { callback: v => fmtKRW(v), font: { family: 'Pretendard' } }, grid: { color: '#F3F4F6' } }
       }
     }
   });
 
-  // Plan distribution
-  const planMap = {};
-  data.forEach(d => {
-    planMap[d.plan] = (planMap[d.plan] || 0) + d.amount;
-  });
+  // === New vs Renewal Pie ===
+  const newTotal = data.reduce((s, d) => s + (d.type === 'New' ? d.amount : 0), 0);
+  const renewTotal = data.reduce((s, d) => s + (d.type === 'Renewal' ? d.amount : 0), 0);
 
-  const plans = Object.keys(planMap);
-  const planValues = plans.map(p => planMap[p]);
-  const planColors = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444'];
-
-  if (planChart) planChart.destroy();
-  planChart = new Chart(document.getElementById('chartPlan'), {
+  if (typeChart) typeChart.destroy();
+  typeChart = new Chart(document.getElementById('chartType'), {
     type: 'doughnut',
     data: {
-      labels: plans,
+      labels: ['New', 'Renewal'],
       datasets: [{
-        data: planValues,
-        backgroundColor: planColors.slice(0, plans.length),
+        data: [newTotal, renewTotal],
+        backgroundColor: ['#3B82F6', '#4F46E5'],
         borderWidth: 0,
       }]
     },
@@ -1293,255 +1107,17 @@ function updateCharts(data) {
       maintainAspectRatio: false,
       cutout: '65%',
       plugins: {
-        legend: {
-          position: 'right',
-          labels: { font: { family: 'Pretendard', size: 13 }, padding: 16 }
-        },
-        tooltip: {
-          callbacks: {
-            label: ctx => `${ctx.label}: ${fmtFull(ctx.raw)}`
-          }
-        }
+        legend: { position: 'bottom', labels: { font: { family: 'Pretendard', size: 13 }, padding: 20 } },
+        tooltip: { callbacks: { label: ctx => `${ctx.label}: ${fmtFull(ctx.raw)}` } }
       }
     }
   });
-}
-
-// ==================== Target Modal ====================
-function openTargetModal() {
-  document.getElementById('targetInput').value = getTarget() || '';
-  document.getElementById('targetModal').classList.add('active');
-}
-
-function closeTargetModal() {
-  document.getElementById('targetModal').classList.remove('active');
-}
-
-function saveTarget() {
-  const v = Number(document.getElementById('targetInput').value) || 0;
-  setTarget(v);
-  closeTargetModal();
-  showToast('Target updated');
-  refreshAll();
-}
-
-// ==================== Toast ====================
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-// ==================== AI Chat ====================
-function askQuick(text) {
-  document.getElementById('chatInput').value = text;
-  sendChat();
-}
-
-function sendChat() {
-  const input = document.getElementById('chatInput');
-  const msg = input.value.trim();
-  if (!msg) return;
-
-  appendChat('user', msg);
-  input.value = '';
-
-  // Generate AI response based on data analysis
-  setTimeout(() => {
-    const response = generateAIResponse(msg);
-    appendChat('ai', response);
-  }, 400);
-}
-
-function appendChat(role, text) {
-  const container = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  div.className = `chat-msg ${role}`;
-  div.innerHTML = `
-    <div class="chat-avatar">${role === 'ai' ? 'AI' : 'You'}</div>
-    <div class="chat-bubble">${text.replace(/\n/g, '<br>')}</div>
-  `;
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-}
-
-function generateAIResponse(question) {
-  const data = loadData();
-  const won = data.filter(d => d.status === 'Closed-won');
-  const opp = data.filter(d => d.status === 'Opportunity');
-  const target = getTarget();
-  const q = question.toLowerCase();
-
-  if (data.length === 0) {
-    return 'There is no sales data to analyze yet. Please add some contracts in the Data Entry section first.';
-  }
-
-  const totalARR = won.reduce((s, d) => s + d.amount, 0);
-  const totalMRR = won.reduce((s, d) => s + d.amount / d.months, 0);
-  const pipeline = opp.reduce((s, d) => s + d.amount, 0);
-
-  // Rep performance
-  const repMap = {};
-  won.forEach(d => {
-    if (!repMap[d.rep]) repMap[d.rep] = { amount: 0, count: 0 };
-    repMap[d.rep].amount += d.amount;
-    repMap[d.rep].count += 1;
-  });
-  const repRanking = Object.entries(repMap).sort((a, b) => b[1].amount - a[1].amount);
-
-  // Current month data
-  const now = new Date();
-  const curMonth = now.toISOString().substring(0, 7);
-  const curMonthWon = won.filter(d => d.closeDate.startsWith(curMonth));
-  const curMonthRepMap = {};
-  curMonthWon.forEach(d => {
-    curMonthRepMap[d.rep] = (curMonthRepMap[d.rep] || 0) + d.amount;
-  });
-  const curMonthReps = Object.entries(curMonthRepMap).sort((a, b) => b[1] - a[1]);
-
-  // Best performer
-  if (q.includes('best') || q.includes('performer') || q.includes('top') || q.includes('가장') || q.includes('성과') || q.includes('담당자')) {
-    if (curMonthReps.length > 0) {
-      const [topName, topAmt] = curMonthReps[0];
-      let response = `<strong>This Month's Best Performer</strong>\n\n`;
-      response += `🏆 <strong>${esc(topName)}</strong> — ${fmtFull(topAmt)}\n\n`;
-      if (curMonthReps.length > 1) {
-        response += `Full ranking this month:\n`;
-        curMonthReps.forEach(([name, amt], i) => {
-          response += `${i + 1}. ${esc(name)}: ${fmtFull(amt)}\n`;
-        });
-      }
-      return response;
-    } else if (repRanking.length > 0) {
-      let response = `No closed deals this month yet. Overall ranking:\n\n`;
-      repRanking.slice(0, 5).forEach(([name, info], i) => {
-        response += `${i + 1}. ${esc(name)}: ${fmtFull(info.amount)} (${info.count} deals)\n`;
-      });
-      return response;
-    }
-    return 'No closed-won data available to determine the best performer.';
-  }
-
-  // Forecast
-  if (q.includes('forecast') || q.includes('next month') || q.includes('예상') || q.includes('예측') || q.includes('다음 달')) {
-    let response = `<strong>Next Month Forecast</strong>\n\n`;
-    response += `<strong>Current Pipeline (Opportunity):</strong> ${fmtFull(pipeline)}\n`;
-    response += `Deals in progress: ${opp.length}\n\n`;
-
-    if (opp.length > 0) {
-      response += `If all opportunities close, projected additional revenue: ${fmtFull(pipeline)}\n\n`;
-      response += `Pipeline breakdown:\n`;
-      opp.forEach(d => {
-        response += `• ${esc(d.account)} (${d.plan}): ${fmtFull(d.amount)}\n`;
-      });
-
-      // Average monthly trend
-      const monthMap = {};
-      won.forEach(d => {
-        const m = d.closeDate.substring(0, 7);
-        monthMap[m] = (monthMap[m] || 0) + d.amount;
-      });
-      const monthlyValues = Object.values(monthMap);
-      if (monthlyValues.length >= 2) {
-        const avg = monthlyValues.reduce((a, b) => a + b, 0) / monthlyValues.length;
-        response += `\nAverage monthly closed revenue: ${fmtFull(Math.round(avg))}`;
-        response += `\nConservative forecast (based on avg): ${fmtFull(Math.round(avg))}`;
-        response += `\nOptimistic forecast (avg + pipeline): ${fmtFull(Math.round(avg + pipeline))}`;
-      }
-    } else {
-      response += 'No opportunities in the pipeline. Consider adding new prospects.';
-    }
-    return response;
-  }
-
-  // Annual target
-  if (q.includes('annual') || q.includes('target') || q.includes('goal') || q.includes('연간') || q.includes('목표') || q.includes('달성')) {
-    if (target <= 0) {
-      return 'No ARR target has been set. Please set a target using the "Set Target" button in the navigation bar.';
-    }
-    const achievement = (totalARR / target) * 100;
-    let response = `<strong>Target Achievement Analysis</strong>\n\n`;
-    response += `Target ARR: ${fmtFull(target)}\n`;
-    response += `Current ARR (Closed-Won): ${fmtFull(totalARR)}\n`;
-    response += `Achievement: <strong>${achievement.toFixed(1)}%</strong>\n`;
-    response += `Gap: ${fmtFull(target - totalARR)}\n\n`;
-
-    if (achievement >= 100) {
-      response += `Congratulations! You've exceeded the target! 🎉`;
-    } else if (achievement >= 80) {
-      response += `You're close! With ${fmtFull(pipeline)} in the pipeline, `;
-      if (totalARR + pipeline >= target) {
-        response += `closing all opportunities would put you over the target.`;
-      } else {
-        response += `you still need additional ${fmtFull(target - totalARR - pipeline)} beyond current pipeline.`;
-      }
-    } else if (achievement >= 50) {
-      response += `Moderate progress. You need ${fmtFull(target - totalARR)} more to hit the target. `;
-      response += `Current pipeline of ${fmtFull(pipeline)} would help but may not be enough.`;
-    } else {
-      response += `Significant gap remains. Focus on accelerating pipeline generation and closing existing opportunities.`;
-    }
-    return response;
-  }
-
-  // Pipeline summary
-  if (q.includes('pipeline') || q.includes('opportunity') || q.includes('진행') || q.includes('파이프')) {
-    if (opp.length === 0) return 'No opportunities in the pipeline currently.';
-    let response = `<strong>Pipeline Summary</strong>\n\n`;
-    response += `Total pipeline value: ${fmtFull(pipeline)}\n`;
-    response += `Number of opportunities: ${opp.length}\n\n`;
-    opp.forEach(d => {
-      response += `• <strong>${esc(d.account)}</strong> — ${d.plan} — ${fmtFull(d.amount)} (${d.months}mo) — Rep: ${esc(d.rep)}\n`;
-    });
-    return response;
-  }
-
-  // Plan distribution
-  if (q.includes('plan') || q.includes('distribution') || q.includes('플랜') || q.includes('분포')) {
-    const planMap = {};
-    data.forEach(d => {
-      if (!planMap[d.plan]) planMap[d.plan] = { amount: 0, count: 0 };
-      planMap[d.plan].amount += d.amount;
-      planMap[d.plan].count += 1;
-    });
-    let response = `<strong>Plan Distribution</strong>\n\n`;
-    const totalAmount = data.reduce((s, d) => s + d.amount, 0);
-    Object.entries(planMap).sort((a, b) => b[1].amount - a[1].amount).forEach(([plan, info]) => {
-      const pct = ((info.amount / totalAmount) * 100).toFixed(1);
-      response += `• <strong>${plan}</strong>: ${fmtFull(info.amount)} (${pct}%) — ${info.count} contracts\n`;
-    });
-    return response;
-  }
-
-  // General summary
-  let response = `<strong>Sales Overview</strong>\n\n`;
-  response += `Total ARR (Closed-Won): ${fmtFull(totalARR)}\n`;
-  response += `Current MRR: ${fmtFull(Math.round(totalMRR))}\n`;
-  response += `Pipeline (Opportunity): ${fmtFull(pipeline)}\n`;
-  response += `Total contracts: ${data.length} (${won.length} closed, ${opp.length} in progress)\n`;
-  if (repRanking.length > 0) {
-    response += `\nTop rep: ${esc(repRanking[0][0])} with ${fmtFull(repRanking[0][1].amount)}`;
-  }
-  if (target > 0) {
-    const ach = ((totalARR / target) * 100).toFixed(1);
-    response += `\nTarget achievement: ${ach}%`;
-  }
-  response += `\n\nAsk me specific questions about performers, forecasts, or targets!`;
-  return response;
-}
-
-// ==================== Refresh ====================
-function refreshAll() {
-  updateDashboard();
-  renderRecords();
 }
 
 // ==================== File Import ====================
 let importedRows = [];
 let importedHeaders = [];
 
-// Drag & Drop
 const uploadZone = document.getElementById('uploadZone');
 uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
 uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
@@ -1562,85 +1138,68 @@ function processFile(file) {
   const reader = new FileReader();
 
   if (ext === 'csv') {
-    reader.onload = e => {
-      const text = e.target.result;
-      parseCSV(text);
-    };
+    reader.onload = e => parseCSV(e.target.result);
     reader.readAsText(file, 'UTF-8');
   } else if (ext === 'xlsx' || ext === 'xls') {
     reader.onload = e => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: 'array', cellDates: true });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const json = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, dateNF: 'yyyy-mm-dd' });
-      if (json.length < 2) { showToast('File is empty or has no data rows'); return; }
+      const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array', cellDates: true });
+      const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: false, dateNF: 'yyyy-mm-dd' });
+      if (json.length < 2) { showToast('File is empty'); return; }
       importedHeaders = json[0].map(h => String(h || '').trim());
-      importedRows = json.slice(1).filter(row => row.some(cell => cell !== undefined && cell !== ''));
+      importedRows = json.slice(1).filter(row => row.some(c => c !== undefined && c !== ''));
       setupMapping();
     };
     reader.readAsArrayBuffer(file);
   } else {
-    showToast('Unsupported file format. Use .csv or .xlsx');
+    showToast('Unsupported format. Use .csv or .xlsx');
   }
 }
 
 function parseCSV(text) {
-  const lines = [];
+  const rows = [];
   let current = '';
   let inQuotes = false;
+  let row = [];
 
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
     if (ch === '"') {
       if (inQuotes && text[i + 1] === '"') { current += '"'; i++; }
-      else { inQuotes = !inQuotes; }
+      else inQuotes = !inQuotes;
     } else if ((ch === ',' || ch === '\t') && !inQuotes) {
-      lines.push(current);
+      row.push(current.trim());
       current = '';
-      if (ch === '\t' || ch === ',') continue;
     } else if ((ch === '\n' || ch === '\r') && !inQuotes) {
-      lines.push(current);
+      row.push(current.trim());
       current = '';
+      if (row.some(c => c !== '')) rows.push(row);
+      row = [];
       if (ch === '\r' && text[i + 1] === '\n') i++;
-      // End of row marker
-      lines.push('__ROW_END__');
     } else {
       current += ch;
     }
   }
-  if (current) lines.push(current);
+  if (current || row.length) { row.push(current.trim()); if (row.some(c => c !== '')) rows.push(row); }
 
-  // Build rows from flat cells
-  const rows = [];
-  let row = [];
-  for (const cell of lines) {
-    if (cell === '__ROW_END__') {
-      if (row.length > 0) rows.push(row);
-      row = [];
-    } else {
-      row.push(cell.trim());
-    }
-  }
-  if (row.length > 0) rows.push(row);
-
-  if (rows.length < 2) { showToast('File is empty or has no data rows'); return; }
+  if (rows.length < 2) { showToast('File is empty'); return; }
   importedHeaders = rows[0];
-  importedRows = rows.slice(1).filter(r => r.some(c => c !== ''));
+  importedRows = rows.slice(1);
   setupMapping();
 }
 
 function setupMapping() {
-  const fields = ['mapAccount','mapRep','mapQuoteDate','mapCloseDate','mapPlan','mapAmount','mapMonths','mapStatus'];
+  const fields = ['mapAccount','mapRep','mapQuoteDate','mapCloseDate','mapPlan','mapAmount','mapMonths','mapDuration','mapType','mapStatus'];
   const keywords = {
-    mapAccount: ['account','company','client','enterprise','firm','customer','기업','회사','고객','거래처'],
-    mapRep: ['rep','sales','owner','manager','담당','영업','세일즈'],
-    mapQuoteDate: ['quote','견적','제안'],
-    mapCloseDate: ['close','closing','contract','signed','계약','체결','클로징'],
-    mapPlan: ['plan','tier','product','플랜','상품','등급'],
-    mapAmount: ['amount','total','price','revenue','value','금액','매출','계약금','총액','가격'],
-    mapMonths: ['period','month','duration','term','기간','개월'],
-    mapStatus: ['status','stage','state','상태','단계']
+    mapAccount: ['account','company','client','customer','\uAE30\uC5C5','\uD68C\uC0AC','\uACE0\uAC1D','\uAC70\uB798\uCC98'],
+    mapRep: ['rep','sales','owner','manager','\uB2F4\uB2F9','\uC601\uC5C5','\uC138\uC77C\uC988'],
+    mapQuoteDate: ['quote','\uACAC\uC801','\uC81C\uC548'],
+    mapCloseDate: ['close','closing','contract','signed','\uACC4\uC57D','\uCCB4\uACB0','\uD074\uB85C\uC9D5'],
+    mapPlan: ['plan','tier','product','\uD50C\uB79C','\uC0C1\uD488','\uB4F1\uAE09'],
+    mapAmount: ['amount','total','price','revenue','value','\uAE08\uC561','\uB9E4\uCD9C','\uACC4\uC57D\uAE08','\uCD1D\uC561','\uAC00\uACA9'],
+    mapMonths: ['period','month','duration','term','\uAE30\uAC04','\uAC1C\uC6D4'],
+    mapDuration: ['duration','subscription','subscribe','\uAD6C\uB3C5','\uC5F0\uAD6C\uB3C5','\uC6D4\uAD6C\uB3C5'],
+    mapType: ['type','category','\uC720\uD615','\uC2E0\uADDC','\uC7AC\uAD6C\uB3C5','\uAD6C\uBD84'],
+    mapStatus: ['status','stage','state','\uC0C1\uD0DC','\uB2E8\uACC4']
   };
 
   fields.forEach(fId => {
@@ -1649,8 +1208,6 @@ function setupMapping() {
     importedHeaders.forEach((h, i) => {
       sel.innerHTML += `<option value="${i}">${esc(h)}</option>`;
     });
-
-    // Auto-match by keyword
     const kws = keywords[fId] || [];
     const matchIdx = importedHeaders.findIndex(h => {
       const lower = h.toLowerCase().replace(/[\s_-]/g, '');
@@ -1687,54 +1244,48 @@ function cancelImport() {
 }
 
 function executeImport() {
-  const mapAccount = document.getElementById('mapAccount').value;
-  const mapRep = document.getElementById('mapRep').value;
-  const mapQuoteDate = document.getElementById('mapQuoteDate').value;
-  const mapCloseDate = document.getElementById('mapCloseDate').value;
-  const mapPlan = document.getElementById('mapPlan').value;
-  const mapAmount = document.getElementById('mapAmount').value;
-  const mapMonths = document.getElementById('mapMonths').value;
-  const mapStatus = document.getElementById('mapStatus').value;
+  const getVal = id => document.getElementById(id).value;
+  const mAccount = getVal('mapAccount');
+  const mRep = getVal('mapRep');
+  const mQuoteDate = getVal('mapQuoteDate');
+  const mCloseDate = getVal('mapCloseDate');
+  const mPlan = getVal('mapPlan');
+  const mAmount = getVal('mapAmount');
+  const mMonths = getVal('mapMonths');
+  const mDuration = getVal('mapDuration');
+  const mType = getVal('mapType');
+  const mStatus = getVal('mapStatus');
 
-  if (mapAccount === '' || mapRep === '' || mapAmount === '') {
+  if (mAccount === '' || mRep === '' || mAmount === '') {
     showToast('Account Name, Sales Rep, and Total Amount are required');
     return;
   }
 
   const data = loadData();
   const today = new Date().toISOString().split('T')[0];
-  let imported = 0;
-  let skipped = 0;
+  let imported = 0, skipped = 0;
 
   importedRows.forEach(row => {
-    const account = String(row[Number(mapAccount)] || '').trim();
-    const rep = String(row[Number(mapRep)] || '').trim();
-    const rawAmount = String(row[Number(mapAmount)] || '').trim();
+    const account = String(row[Number(mAccount)] || '').trim();
+    const rep = String(row[Number(mRep)] || '').trim();
+    const rawAmount = String(row[Number(mAmount)] || '').trim();
 
     if (!account || !rep || !rawAmount) { skipped++; return; }
 
     const amount = Number(rawAmount.replace(/[^0-9.-]/g, ''));
     if (isNaN(amount) || amount <= 0) { skipped++; return; }
 
-    let quoteDate = mapQuoteDate !== '' ? parseDate(row[Number(mapQuoteDate)]) : today;
-    let closeDate = mapCloseDate !== '' ? parseDate(row[Number(mapCloseDate)]) : today;
-    let plan = mapPlan !== '' ? String(row[Number(mapPlan)] || 'Basic').trim() : 'Basic';
-    let months = mapMonths !== '' ? Number(String(row[Number(mapMonths)] || '12').replace(/[^0-9]/g, '')) : 12;
-    let status = mapStatus !== '' ? normalizeStatus(String(row[Number(mapStatus)] || '')) : 'Closed-won';
-
-    if (!quoteDate) quoteDate = today;
-    if (!closeDate) closeDate = today;
-    if (months <= 0) months = 12;
-    if (!['Basic','Pro','Enterprise'].includes(plan)) {
-      const pl = plan.toLowerCase();
-      if (pl.includes('pro')) plan = 'Pro';
-      else if (pl.includes('enter') || pl.includes('ent')) plan = 'Enterprise';
-      else plan = 'Basic';
-    }
+    const quoteDate = mQuoteDate !== '' ? (parseDate(row[Number(mQuoteDate)]) || today) : today;
+    const closeDate = mCloseDate !== '' ? (parseDate(row[Number(mCloseDate)]) || today) : today;
+    let plan = mPlan !== '' ? normalizePlan(String(row[Number(mPlan)] || '')) : 'Basic';
+    let months = mMonths !== '' ? (Number(String(row[Number(mMonths)] || '12').replace(/[^0-9]/g, '')) || 12) : 12;
+    let duration = mDuration !== '' ? normalizeDuration(String(row[Number(mDuration)] || '')) : (months >= 12 ? 'Annual' : 'Monthly');
+    let type = mType !== '' ? normalizeType(String(row[Number(mType)] || '')) : 'New';
+    let status = mStatus !== '' ? normalizeStatus(String(row[Number(mStatus)] || '')) : 'Closed';
 
     data.push({
       id: Date.now().toString() + Math.random().toString(36).slice(2, 6),
-      account, rep, quoteDate, closeDate, plan, amount, months, status
+      account, rep, quoteDate, closeDate, plan, duration, type, amount, months, status
     });
     imported++;
   });
@@ -1748,55 +1299,207 @@ function executeImport() {
 function parseDate(val) {
   if (!val) return '';
   const s = String(val).trim();
-
-  // Try ISO format (YYYY-MM-DD)
   if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0, 10);
-
-  // Try YYYY/MM/DD
-  if (/^\d{4}\/\d{1,2}\/\d{1,2}/.test(s)) {
-    const [y, m, d] = s.split('/');
-    return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
-  }
-
-  // Try MM/DD/YYYY or DD/MM/YYYY (assume MM/DD/YYYY)
-  if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(s)) {
-    const [a, b, y] = s.split('/');
-    return `${y}-${a.padStart(2,'0')}-${b.padStart(2,'0')}`;
-  }
-
-  // Try YYYY.MM.DD (Korean common format)
-  if (/^\d{4}\.\d{1,2}\.\d{1,2}/.test(s)) {
-    const [y, m, d] = s.split('.');
-    return `${y}-${m.trim().padStart(2,'0')}-${d.trim().padStart(2,'0')}`;
-  }
-
-  // Try Date object
+  if (/^\d{4}\/\d{1,2}\/\d{1,2}/.test(s)) { const [y,m,d] = s.split('/'); return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`; }
+  if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(s)) { const [a,b,y] = s.split('/'); return `${y}-${a.padStart(2,'0')}-${b.padStart(2,'0')}`; }
+  if (/^\d{4}\.\d{1,2}\.\d{1,2}/.test(s)) { const [y,m,d] = s.split('.'); return `${y}-${m.trim().padStart(2,'0')}-${d.trim().padStart(2,'0')}`; }
   const d = new Date(s);
   if (!isNaN(d.getTime())) return d.toISOString().split('T')[0];
-
   return '';
+}
+
+function normalizePlan(val) {
+  const v = val.toLowerCase().replace(/[\s_-]/g, '');
+  if (v.includes('advance') || v.includes('\uC5B4\uB4DC\uBC34\uC2A4')) return 'Advance';
+  if (v.includes('professional') || v.includes('prof') || v.includes('\uD504\uB85C\uD398\uC154\uB110')) return 'Professional';
+  if (v.includes('standard') || v.includes('\uC2A4\uD0E0\uB2E4\uB4DC')) return 'Standard';
+  return 'Basic';
+}
+
+function normalizeDuration(val) {
+  const v = val.toLowerCase().replace(/[\s_-]/g, '');
+  if (v.includes('month') || v.includes('\uC6D4\uAD6C\uB3C5') || v.includes('\uC6D4')) return 'Monthly';
+  return 'Annual';
+}
+
+function normalizeType(val) {
+  const v = val.toLowerCase().replace(/[\s_-]/g, '');
+  if (v.includes('renew') || v.includes('\uC7AC\uAD6C\uB3C5') || v.includes('\uC7AC\uACC4\uC57D') || v.includes('\uAC31\uC2E0')) return 'Renewal';
+  return 'New';
 }
 
 function normalizeStatus(val) {
   const v = val.toLowerCase().replace(/[\s_-]/g, '');
-  if (v.includes('won') || v.includes('closed') || v.includes('close') || v.includes('완료') || v.includes('체결') || v.includes('클로징')) return 'Closed-won';
-  return 'Opportunity';
+  if (v.includes('close') || v.includes('\uC644\uB8CC') || v.includes('\uCCB4\uACB0') || v.includes('\uD074\uB85C\uC9D5')) return 'Closed';
+  return 'In Progress';
 }
+
+// ==================== AI Chat ====================
+function askQuick(text) {
+  document.getElementById('chatInput').value = text;
+  sendChat();
+}
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  appendChat('user', msg);
+  input.value = '';
+  setTimeout(() => appendChat('ai', generateAIResponse(msg)), 300);
+}
+
+function appendChat(role, text) {
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `chat-msg ${role}`;
+  div.innerHTML = `
+    <div class="chat-avatar">${role === 'ai' ? 'AI' : 'You'}</div>
+    <div class="chat-bubble">${text.replace(/\n/g, '<br>')}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function generateAIResponse(question) {
+  const data = loadData();
+  const closed = data.filter(d => d.status === 'Closed');
+  const pipeline = data.filter(d => d.status === 'In Progress');
+  const q = question.toLowerCase();
+
+  if (data.length === 0) return 'No data to analyze yet. Please add contracts in Data Entry first.';
+
+  const totalARR = closed.reduce((s, d) => s + d.amount, 0);
+  const currentMRR = closed.reduce((s, d) => s + d.amount / d.months, 0);
+  const newExpMRR = pipeline.reduce((s, d) => s + d.amount / d.months, 0);
+  const projMRR = currentMRR + newExpMRR;
+  const pipelineTotal = pipeline.reduce((s, d) => s + d.amount, 0);
+
+  // New vs Renewal
+  const newClosed = closed.filter(d => d.type === 'New');
+  const renewClosed = closed.filter(d => d.type === 'Renewal');
+  const newAmt = newClosed.reduce((s, d) => s + d.amount, 0);
+  const renewAmt = renewClosed.reduce((s, d) => s + d.amount, 0);
+
+  // Rep performance
+  const repMap = {};
+  closed.forEach(d => {
+    if (!repMap[d.rep]) repMap[d.rep] = { amount: 0, count: 0 };
+    repMap[d.rep].amount += d.amount;
+    repMap[d.rep].count += 1;
+  });
+  const repRanking = Object.entries(repMap).sort((a, b) => b[1].amount - a[1].amount);
+
+  // Current month
+  const now = new Date();
+  const curMonth = now.toISOString().substring(0, 7);
+  const curMonthClosed = closed.filter(d => d.closeDate.startsWith(curMonth));
+  const curRepMap = {};
+  curMonthClosed.forEach(d => { curRepMap[d.rep] = (curRepMap[d.rep] || 0) + d.amount; });
+  const curReps = Object.entries(curRepMap).sort((a, b) => b[1] - a[1]);
+
+  // Best performer
+  if (q.includes('best') || q.includes('performer') || q.includes('top') || q.includes('\uAC00\uC7A5') || q.includes('\uC131\uACFC') || q.includes('\uB2F4\uB2F9')) {
+    if (curReps.length > 0) {
+      let r = `<strong>This Month's Best Performer</strong>\n\n`;
+      curReps.forEach(([name, amt], i) => {
+        r += `${i === 0 ? '\uD83C\uDFC6 ' : ''}${i + 1}. ${esc(name)}: ${fmtFull(amt)}\n`;
+      });
+      return r;
+    }
+    if (repRanking.length > 0) {
+      let r = `No closed deals this month yet. Overall ranking:\n\n`;
+      repRanking.slice(0, 5).forEach(([name, info], i) => {
+        r += `${i + 1}. ${esc(name)}: ${fmtFull(info.amount)} (${info.count} deals)\n`;
+      });
+      return r;
+    }
+    return 'No closed data to rank performers.';
+  }
+
+  // New vs Renewal
+  if (q.includes('new') || q.includes('renewal') || q.includes('renew') || q.includes('\uC2E0\uADDC') || q.includes('\uC7AC\uAD6C\uB3C5') || q.includes('breakdown') || q.includes('\uBE44\uC911')) {
+    const total = newAmt + renewAmt;
+    const newPct = total > 0 ? ((newAmt / total) * 100).toFixed(1) : 0;
+    const renewPct = total > 0 ? ((renewAmt / total) * 100).toFixed(1) : 0;
+    let r = `<strong>New vs Renewal Breakdown</strong>\n\n`;
+    r += `New Contracts: ${fmtFull(newAmt)} (${newPct}%) \u2014 ${newClosed.length} deals\n`;
+    r += `Renewal Contracts: ${fmtFull(renewAmt)} (${renewPct}%) \u2014 ${renewClosed.length} deals\n\n`;
+    if (renewAmt > newAmt) r += 'Renewals are driving more revenue \u2014 strong retention signal.';
+    else r += 'New business is the primary revenue driver. Focus on retention to boost renewals.';
+    return r;
+  }
+
+  // Annual vs Monthly subscription
+  if (q.includes('annual') || q.includes('monthly') || q.includes('\uC5F0\uAD6C\uB3C5') || q.includes('\uC6D4\uAD6C\uB3C5') || q.includes('subscription') || q.includes('ratio') || q.includes('\uAD6C\uB3C5')) {
+    const annualData = closed.filter(d => d.duration === 'Annual');
+    const monthlyData = closed.filter(d => d.duration === 'Monthly');
+    const annualAmt = annualData.reduce((s, d) => s + d.amount, 0);
+    const monthlyAmt = monthlyData.reduce((s, d) => s + d.amount, 0);
+    const total = annualAmt + monthlyAmt;
+    let r = `<strong>Subscription Duration Analysis</strong>\n\n`;
+    r += `Annual: ${fmtFull(annualAmt)} (${total > 0 ? ((annualAmt/total)*100).toFixed(1) : 0}%) \u2014 ${annualData.length} contracts\n`;
+    r += `Monthly: ${fmtFull(monthlyAmt)} (${total > 0 ? ((monthlyAmt/total)*100).toFixed(1) : 0}%) \u2014 ${monthlyData.length} contracts\n\n`;
+    if (annualAmt > monthlyAmt) r += 'Annual subscriptions dominate \u2014 good revenue predictability.';
+    else r += 'Monthly subscriptions are higher \u2014 consider incentives for annual conversion.';
+    return r;
+  }
+
+  // Forecast
+  if (q.includes('forecast') || q.includes('next month') || q.includes('\uC608\uC0C1') || q.includes('\uC608\uCE21') || q.includes('\uB2E4\uC74C \uB2EC')) {
+    let r = `<strong>Forecast Summary</strong>\n\n`;
+    r += `<strong>Forecasting A (New Expected MRR):</strong> ${fmtFull(Math.round(newExpMRR))}\n`;
+    r += `Pipeline deals: ${pipeline.length} (Total: ${fmtFull(pipelineTotal)})\n\n`;
+    r += `<strong>Forecasting B (Total Projected MRR):</strong> ${fmtFull(Math.round(projMRR))}\n`;
+    r += `= Current MRR ${fmtFull(Math.round(currentMRR))} + Pipeline MRR ${fmtFull(Math.round(newExpMRR))}\n\n`;
+    if (pipeline.length > 0) {
+      r += `Pipeline breakdown:\n`;
+      pipeline.forEach(d => {
+        r += `\u2022 ${esc(d.account)} (${d.type}/${d.plan}): ${fmtFull(d.amount)} \u2192 MRR ${fmtFull(Math.round(d.amount / d.months))}\n`;
+      });
+    }
+    return r;
+  }
+
+  // Pipeline
+  if (q.includes('pipeline') || q.includes('\uD30C\uC774\uD504') || q.includes('\uC9C4\uD589')) {
+    if (pipeline.length === 0) return 'No opportunities in the pipeline currently.';
+    let r = `<strong>Pipeline Summary</strong>\n\nTotal value: ${fmtFull(pipelineTotal)} | Deals: ${pipeline.length}\n\n`;
+    pipeline.forEach(d => {
+      r += `\u2022 <strong>${esc(d.account)}</strong> \u2014 ${d.plan}/${d.type} \u2014 ${fmtFull(d.amount)} (${d.months}mo) \u2014 Rep: ${esc(d.rep)}\n`;
+    });
+    return r;
+  }
+
+  // General
+  let r = `<strong>Sales Overview</strong>\n\n`;
+  r += `Total ARR (Closed): ${fmtFull(totalARR)}\n`;
+  r += `Current MRR: ${fmtFull(Math.round(currentMRR))}\n`;
+  r += `New Expected MRR: ${fmtFull(Math.round(newExpMRR))}\n`;
+  r += `Projected MRR: ${fmtFull(Math.round(projMRR))}\n\n`;
+  r += `Contracts: ${data.length} total (${closed.length} closed, ${pipeline.length} in progress)\n`;
+  r += `New: ${fmtFull(newAmt)} | Renewal: ${fmtFull(renewAmt)}\n`;
+  if (repRanking.length > 0) r += `\nTop rep: ${esc(repRanking[0][0])} (${fmtFull(repRanking[0][1].amount)})`;
+  return r;
+}
+
+// ==================== Toast ====================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ==================== Refresh ====================
+function refreshAll() { updateDashboard(); renderRecords(); }
 
 // ==================== Init ====================
 function init() {
-  // Set default date to today
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('fQuoteDate').value = today;
   document.getElementById('fCloseDate').value = today;
-
   refreshAll();
 }
-
-// Close modal on overlay click
-document.getElementById('targetModal').addEventListener('click', function(e) {
-  if (e.target === this) closeTargetModal();
-});
 
 init();
 </script>
