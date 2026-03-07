@@ -170,6 +170,24 @@
 
   .chart-container { position: relative; height: 320px; }
 
+  /* Dashboard Tables */
+  .dash-tables-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .dash-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .dash-table th, .dash-table td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .dash-table th { font-weight: 600; color: var(--text-secondary); font-size: 12px; text-transform: uppercase; }
+  .dash-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .dash-table th.num { text-align: right; }
+  .dash-table tfoot td { font-weight: 700; border-top: 2px solid var(--border); border-bottom: none; }
+
   /* Top Reps */
   .top-reps { display: flex; flex-direction: column; gap: 12px; }
 
@@ -567,6 +585,7 @@
     .main { padding: 16px; }
     .kpi-grid { grid-template-columns: 1fr 1fr; }
     .charts-grid { grid-template-columns: 1fr; }
+    .dash-tables-grid { grid-template-columns: 1fr; }
     .form-grid { grid-template-columns: 1fr; }
     .search-input { width: 100%; }
     .table-controls { flex-direction: column; align-items: stretch; }
@@ -636,6 +655,29 @@
       <div class="card">
         <div class="card-title">New vs Renewal Revenue</div>
         <div class="chart-container"><canvas id="chartType"></canvas></div>
+      </div>
+    </div>
+
+    <div class="dash-tables-grid">
+      <div class="card">
+        <div class="card-title">Closed Deals</div>
+        <div id="dashClosedWrap">
+          <table class="dash-table">
+            <thead><tr><th>Account</th><th>Plan</th><th class="num">Total Amount</th><th class="num">MRR</th></tr></thead>
+            <tbody id="dashClosedBody"></tbody>
+            <tfoot id="dashClosedFoot"><tr><td colspan="4">No data</td></tr></tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Forecasting (In Progress)</div>
+        <div id="dashPipelineWrap">
+          <table class="dash-table">
+            <thead><tr><th>Account</th><th>Plan</th><th class="num">Total Amount</th><th class="num">MRR</th></tr></thead>
+            <tbody id="dashPipelineBody"></tbody>
+            <tfoot id="dashPipelineFoot"><tr><td colspan="4">No data</td></tr></tfoot>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -1127,6 +1169,29 @@ function updateDashboard() {
 
   updateTopReps(closed);
   updateCharts(data);
+  renderDashTables(closed, pipeline);
+}
+
+function renderDashTables(closed, pipeline) {
+  renderOneTable('dashClosedBody', 'dashClosedFoot', closed);
+  renderOneTable('dashPipelineBody', 'dashPipelineFoot', pipeline);
+}
+
+function renderOneTable(bodyId, footId, rows) {
+  const tbody = document.getElementById(bodyId);
+  const tfoot = document.getElementById(footId);
+  if (rows.length === 0) {
+    tbody.innerHTML = '';
+    tfoot.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-secondary);padding:24px;">No data</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(d => {
+    const mrr = Math.round(d.amount / d.months);
+    return `<tr><td>${esc(d.account)}</td><td>${esc(d.plan || '-')}</td><td class="num">${fmtFull(d.amount)}</td><td class="num">${fmtFull(mrr)}</td></tr>`;
+  }).join('');
+  const totalAmt = rows.reduce((s, d) => s + d.amount, 0);
+  const totalMRR = rows.reduce((s, d) => s + d.amount / d.months, 0);
+  tfoot.innerHTML = `<tr><td colspan="2">Total (${rows.length})</td><td class="num">${fmtFull(totalAmt)}</td><td class="num">${fmtFull(Math.round(totalMRR))}</td></tr>`;
 }
 
 function updateTopReps(closed) {
