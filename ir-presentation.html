@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ascent Korea IR 2026 - Ground Truth AI Agents</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #111;
+    color: #fff;
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  /* Slide Container */
+  .presentation {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+
+  .slide {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0; left: 0;
+    padding: 60px 80px;
+    background: #1a1a1a;
+    overflow: hidden;
+  }
+
+  .slide.active {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Geometric background decoration */
+  .slide::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    left: -100px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(220, 38, 38, 0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .slide::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+      linear-gradient(rgba(220, 38, 38, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(220, 38, 38, 0.03) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+  }
+
+  /* Network lines decoration */
+  .net-decoration {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    opacity: 0.15;
+  }
+
+  .net-decoration svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ===== SLIDE 1: Cover ===== */
+  .slide-cover {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .slide-cover .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+    justify-content: center;
+  }
+
+  .slide-cover .logo-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .slide-cover .logo-text {
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+
+  .slide-cover h1 {
+    font-size: 52px;
+    font-weight: 900;
+    line-height: 1.3;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .slide-cover h1 .highlight {
+    color: #2563eb;
+  }
+
+  .slide-cover .subtitle {
+    font-size: 24px;
+    font-weight: 300;
+    color: #ccc;
+    margin-bottom: 12px;
+  }
+
+  .slide-cover .tagline {
+    font-size: 18px;
+    color: #2563eb;
+    font-weight: 400;
+    margin-bottom: 60px;
+  }
+
+  .slide-cover .footer {
+    font-size: 14px;
+    color: #666;
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .slide-cover .branding {
+    position: absolute;
+    bottom: 40px;
+    right: 60px;
+    font-size: 13px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ===== SLIDE 2: Company Overview ===== */
+  .slide-overview h2 {
+    font-size: 38px;
+    font-weight: 900;
+    line-height: 1.3;
+    margin-bottom: 50px;
+    max-width: 800px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .three-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .column-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .column-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .column-icon svg {
+    width: 100%;
+    height: 100%;
+    stroke: #2563eb;
+    fill: none;
+    stroke-width: 1.5;
+  }
+
+  .column-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .column-subtitle {
+    font-size: 16px;
+    color: #2563eb;
+    font-weight: 400;
+  }
+
+  .column ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .column ul li {
+    padding: 8px 0;
+    padding-left: 20px;
+    position: relative;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #ddd;
+  }
+
+  .column ul li::before {
+    content: '\2022';
+    position: absolute;
+    left: 0;
+    color: #fff;
+  }
+
+  .column ul li strong {
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .column ul li .red {
+    color: #2563eb;
+    font-weight: 700;
+  }
+
+  /* ===== SLIDE 3: DX to AX ===== */
+  .slide-dx-ax h2 {
+    font-size: 42px;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .slide-dx-ax .desc {
+    text-align: center;
+    font-size: 16px;
+    color: #aaa;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 30px;
+  }
+
+  .comparison-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .comparison-label {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #999;
+  }
+
+  .comparison-label.future {
+    color: #2563eb;
+  }
+
+  .comparison-label .bold {
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .comparison-label.future .bold {
+    color: #2563eb;
+  }
+
+  .comparison-mockup {
+    background: #222;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 24px;
+    width: 100%;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .mockup-bar {
+    height: 12px;
+    background: #444;
+    border-radius: 6px;
+  }
+
+  .mockup-bar.short { width: 60%; }
+  .mockup-bar.medium { width: 80%; }
+  .mockup-bar.long { width: 95%; }
+  .mockup-bar.highlight { background: #2563eb; opacity: 0.6; }
+
+  .mockup-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #333;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  .mockup-search span {
+    color: #888;
+    font-size: 13px;
+  }
+
+  .chat-bubble {
+    background: #333;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #bbb;
+    line-height: 1.5;
+  }
+
+  .chat-bubble.user {
+    background: #2563eb;
+    color: #fff;
+    align-self: flex-end;
+    max-width: 80%;
+    border-bottom-right-radius: 4px;
+  }
+
+  .chat-bubble.ai {
+    align-self: flex-start;
+    max-width: 90%;
+    border-bottom-left-radius: 4px;
+  }
+
+  .chat-bubble .red-text {
+    color: #60a5fa;
+    font-weight: 600;
+  }
+
+  .comparison-caption {
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+    margin-top: 16px;
+  }
+
+  .bottom-callout {
+    background: rgba(220, 38, 38, 0.08);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    border-radius: 12px;
+    padding: 24px 32px;
+    text-align: center;
+    font-size: 16px;
+    line-height: 1.8;
+    color: #ddd;
+    position: relative;
+    z-index: 1;
+  }
+
+  .bottom-callout .red {
+    color: #2563eb;
+    font-weight: 700;
+  }
+
+  .bottom-callout strong {
+    color: #fff;
+  }
+
+  /* ===== SLIDE 4: Data Moat ===== */
+  .slide-data h2 {
+    font-size: 42px;
+    font-weight: 900;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .iceberg-section {
+    display: flex;
+    gap: 40px;
+    flex: 1;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .iceberg {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .iceberg-water {
+    width: 100%;
+    height: 2px;
+    background: rgba(255,255,255,0.3);
+    position: absolute;
+    top: 30%;
+  }
+
+  .iceberg-top {
+    width: 0;
+    height: 0;
+    border-left: 80px solid transparent;
+    border-right: 80px solid transparent;
+    border-bottom: 100px solid rgba(255,255,255,0.15);
+    margin-bottom: 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .iceberg-bottom {
+    width: 0;
+    height: 0;
+    border-left: 200px solid transparent;
+    border-right: 200px solid transparent;
+    border-top: 250px solid rgba(220, 38, 38, 0.25);
+    position: relative;
+  }
+
+  .iceberg-label {
+    position: absolute;
+    font-size: 15px;
+    white-space: nowrap;
+  }
+
+  .iceberg-label.competitors {
+    top: 15%;
+    right: 0;
+    text-align: left;
+  }
+
+  .iceberg-label .label-title {
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  .iceberg-label .label-sub {
+    color: #999;
+    font-size: 14px;
+  }
+
+  .iceberg-label .label-desc {
+    color: #888;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .iceberg-label.ascent {
+    top: 45%;
+    left: 0;
+  }
+
+  .iceberg-label.ascent .label-title {
+    color: #2563eb;
+  }
+
+  .iceberg-label.ascent .label-sub {
+    color: #2563eb;
+    opacity: 0.8;
+  }
+
+  .iceberg-label.data-info {
+    bottom: 15%;
+    right: 5%;
+    text-align: right;
+  }
+
+  .infra-card {
+    background: #2563eb;
+    border-radius: 12px;
+    padding: 24px 28px;
+    width: 220px;
+    flex-shrink: 0;
+  }
+
+  .infra-card h4 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+  }
+
+  .infra-card p {
+    font-size: 15px;
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  .infra-card .big {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .slide-data .quote {
+    text-align: center;
+    font-size: 17px;
+    line-height: 1.8;
+    color: #ccc;
+    margin-top: 30px;
+    position: relative;
+    z-index: 1;
+    font-style: italic;
+  }
+
+  .slide-data .quote strong {
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /* ===== Navigation ===== */
+  .nav {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    border-radius: 30px;
+    border: 1px solid #333;
+    z-index: 100;
+  }
+
+  .nav button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+
+  .nav button:hover {
+    background: rgba(255,255,255,0.1);
+  }
+
+  .nav .page-info {
+    font-size: 14px;
+    color: #888;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  .nav .dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .nav .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #444;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .nav .dot.active {
+    background: #2563eb;
+  }
+
+  /* Branding footer */
+  .slide-branding {
+    position: absolute;
+    bottom: 20px;
+    right: 40px;
+    font-size: 12px;
+    color: #555;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="presentation">
+
+  <!-- SLIDE 1: Cover -->
+  <div class="slide slide-cover active" data-slide="1" style="background: linear-gradient(135deg, #0a0e27 0%, #1a1040 30%, #0d1f4a 60%, #0a0e27 100%); padding: 0;">
+    <!-- Geometric pattern background -->
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none;">
+      <svg width="100%" height="100%" viewBox="0 0 1400 800" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#2563eb" stop-opacity="0.15"/>
+            <stop offset="100%" stop-color="#2563eb" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="glow2" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#60a5fa" stop-opacity="0.1"/>
+            <stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <!-- Glowing orbs -->
+        <circle cx="250" cy="350" r="300" fill="url(#glow1)"/>
+        <circle cx="1150" cy="200" r="250" fill="url(#glow2)"/>
+        <circle cx="700" cy="700" r="350" fill="url(#glow1)"/>
+        <!-- Hexagon grid -->
+        <g stroke="#2563eb" stroke-width="0.5" fill="none" opacity="0.12">
+          <polygon points="200,80 240,57 280,80 280,126 240,149 200,126"/>
+          <polygon points="280,80 320,57 360,80 360,126 320,149 280,126"/>
+          <polygon points="240,149 280,126 320,149 320,195 280,218 240,195"/>
+          <polygon points="160,149 200,126 240,149 240,195 200,218 160,195"/>
+          <polygon points="320,149 360,126 400,149 400,195 360,218 320,195"/>
+        </g>
+        <g stroke="#2563eb" stroke-width="0.5" fill="none" opacity="0.08">
+          <polygon points="900,50 940,27 980,50 980,96 940,119 900,96"/>
+          <polygon points="980,50 1020,27 1060,50 1060,96 1020,119 980,96"/>
+          <polygon points="1060,50 1100,27 1140,50 1140,96 1100,119 1060,96"/>
+          <polygon points="940,119 980,96 1020,119 1020,165 980,188 940,165"/>
+          <polygon points="1020,119 1060,96 1100,119 1100,165 1060,188 1020,165"/>
+          <polygon points="1100,119 1140,96 1180,119 1180,165 1140,188 1100,165"/>
+          <polygon points="980,188 1020,165 1060,188 1060,234 1020,257 980,234"/>
+          <polygon points="1060,188 1100,165 1140,188 1140,234 1100,257 1060,234"/>
+        </g>
+        <!-- Diamond shapes -->
+        <g stroke="#60a5fa" stroke-width="0.4" fill="none" opacity="0.1">
+          <rect x="50" y="500" width="60" height="60" transform="rotate(45 80 530)"/>
+          <rect x="100" y="550" width="40" height="40" transform="rotate(45 120 570)"/>
+          <rect x="1250" y="450" width="50" height="50" transform="rotate(45 1275 475)"/>
+          <rect x="1300" y="500" width="35" height="35" transform="rotate(45 1317 517)"/>
+        </g>
+        <!-- Triangle accents -->
+        <g stroke="#2563eb" stroke-width="0.6" fill="none" opacity="0.15">
+          <polygon points="600,620 640,560 680,620"/>
+          <polygon points="650,650 680,605 710,650"/>
+          <polygon points="100,250 130,200 160,250"/>
+          <polygon points="1200,350 1230,300 1260,350"/>
+        </g>
+        <!-- Connecting dots and lines -->
+        <g stroke="#60a5fa" stroke-width="0.3" opacity="0.2">
+          <line x1="300" y1="300" x2="500" y2="250"/>
+          <line x1="500" y1="250" x2="650" y2="320"/>
+          <line x1="650" y1="320" x2="850" y2="200"/>
+          <line x1="850" y1="200" x2="1000" y2="280"/>
+          <line x1="1000" y1="280" x2="1150" y2="220"/>
+          <line x1="400" y1="500" x2="600" y2="450"/>
+          <line x1="600" y1="450" x2="800" y2="520"/>
+          <line x1="800" y1="520" x2="1000" y2="460"/>
+        </g>
+        <g fill="#60a5fa" opacity="0.3">
+          <circle cx="300" cy="300" r="2.5"/>
+          <circle cx="500" cy="250" r="3"/>
+          <circle cx="650" cy="320" r="2"/>
+          <circle cx="850" cy="200" r="3"/>
+          <circle cx="1000" cy="280" r="2.5"/>
+          <circle cx="1150" cy="220" r="2"/>
+          <circle cx="400" cy="500" r="2"/>
+          <circle cx="600" cy="450" r="3"/>
+          <circle cx="800" cy="520" r="2.5"/>
+          <circle cx="1000" cy="460" r="2"/>
+        </g>
+        <!-- Scattered small dots -->
+        <g fill="#fff" opacity="0.08">
+          <circle cx="150" cy="100" r="1.5"/>
+          <circle cx="450" cy="150" r="1"/>
+          <circle cx="750" cy="80" r="1.5"/>
+          <circle cx="1050" cy="130" r="1"/>
+          <circle cx="1300" cy="100" r="1.5"/>
+          <circle cx="200" cy="650" r="1"/>
+          <circle cx="500" cy="700" r="1.5"/>
+          <circle cx="900" cy="680" r="1"/>
+          <circle cx="1200" cy="650" r="1.5"/>
+          <circle cx="350" cy="400" r="1"/>
+          <circle cx="1100" cy="550" r="1"/>
+        </g>
+      </svg>
+    </div>
+    <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 48 48">
+        <rect x="4" y="12" width="18" height="18" rx="3" fill="#2563eb" transform="rotate(-10 13 21)"/>
+        <rect x="20" y="16" width="18" height="18" rx="3" fill="#60a5fa" transform="rotate(5 29 25)"/>
+      </svg>
+      <span class="logo-text">Listening Mind</span>
+    </div>
+    <h1>리스닝마인드 소개서</h1>
+    <p class="subtitle">2026 Ascent Korea Investor Relations</p>
+    <p class="tagline">From Data Intelligence to Autonomous AI Agents</p>
+    <div class="footer">Confidential | 2026.02</div>
+    <div class="branding">NotebookLM</div>
+  </div>
+
+  <!-- SLIDE 2: Company Overview -->
+  <div class="slide slide-overview" data-slide="2">
+    <h2>The Only Provider of Census-Level Search Intent Data in Korea, Japan, and the US</h2>
+    <div class="three-columns">
+      <div class="column">
+        <div class="column-header">
+          <div class="column-icon">
+            <svg viewBox="0 0 64 64"><ellipse cx="32" cy="20" rx="18" ry="6"/><ellipse cx="32" cy="28" rx="18" ry="6"/><ellipse cx="32" cy="36" rx="18" ry="6"/><ellipse cx="32" cy="44" rx="18" ry="6"/></svg>
+          </div>
+          <div class="column-title">Unique Asset</div>
+          <div class="column-subtitle">(The Moat)</div>
+        </div>
+        <ul>
+          <li>한국 · 일본 · 미국 <strong>전수</strong>(Census-Level) 검색 인텐트 데이터 보유</li>
+          <li><strong>2PB+</strong> 규모의 데이터 자산과 <strong>368대</strong> 서버 인프라</li>
+          <li>표본(Panel)이나 소셜 데이터가 아닌, <strong class="red">'실체적 진실(Ground Truth)'</strong> 데이터</li>
+        </ul>
+      </div>
+      <div class="column">
+        <div class="column-header">
+          <div class="column-icon">
+            <svg viewBox="0 0 64 64"><polyline points="8,52 24,36 36,44 56,16" stroke-linecap="round" stroke-linejoin="round"/><polyline points="44,16 56,16 56,28" stroke-linecap="round"/><circle cx="20" cy="48" r="3" fill="#2563eb"/><circle cx="36" cy="40" r="3" fill="#2563eb"/><circle cx="48" cy="28" r="3" fill="#2563eb"/></svg>
+          </div>
+          <div class="column-title">Business Evolution</div>
+          <div class="column-subtitle">(The Scale)</div>
+        </div>
+        <ul>
+          <li><strong>Consulting</strong> (Market Proof)<br>&rarr; <span class="red">SaaS</span> (Recurring Revenue)<br>&rarr; <span class="red">AI Agent</span> (Non-linear Scale)</li>
+          <li>마케팅 실행을 자동화하는 <strong>'Vertical AI Agent'</strong>로 진화</li>
+        </ul>
+      </div>
+      <div class="column">
+        <div class="column-header">
+          <div class="column-icon">
+            <svg viewBox="0 0 64 64"><path d="M32 8 L32 24 M20 24 L44 24 L44 36 C44 48 32 56 32 56 C32 56 20 48 20 36 L20 24Z" stroke-linecap="round" stroke-linejoin="round"/><path d="M44 36 L56 36 M8 36 L20 36" stroke-linecap="round"/></svg>
+          </div>
+          <div class="column-title">Market Validation</div>
+          <div class="column-subtitle">(The Trust)</div>
+        </div>
+        <ul>
+          <li>주요 주주: <strong class="red">신한벤처투자</strong>, 국민은행, NH투자증권, 티인베스트먼트, 우리벤처투자</li>
+          <li>고객사: <strong class="red">삼성물산</strong>, <strong class="red">종근당건강</strong>, 제일기획, LG전자 등 엔터프라이즈 도입 가속화</li>
+        </ul>
+      </div>
+    </div>
+    <div class="slide-branding">NotebookLM</div>
+  </div>
+
+  <!-- SLIDE 3: DX to AX -->
+  <div class="slide slide-dx-ax" data-slide="3">
+    <h2>From DX to AX: The Shift from SEO to GEO</h2>
+    <p class="desc">마케팅 시장은 Digital Transformation(DX)을 넘어 AI Transformation(AX) 시대로 진입했습니다.</p>
+    <div class="comparison">
+      <div class="comparison-side">
+        <div class="comparison-label"><span class="bold">Past:</span> Search Keywords (SEO)</div>
+        <div class="comparison-mockup">
+          <div class="mockup-search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Google</span>
+          </div>
+          <div class="mockup-bar highlight short"></div>
+          <div class="mockup-bar long"></div>
+          <div class="mockup-bar medium"></div>
+          <div class="mockup-bar long"></div>
+          <div class="mockup-bar highlight medium"></div>
+          <div class="mockup-bar short"></div>
+        </div>
+        <div class="comparison-caption">키워드 상위 노출 경쟁</div>
+      </div>
+      <div class="comparison-side">
+        <div class="comparison-label future"><span class="bold">Future:</span> AI Answers (GEO)</div>
+        <div class="comparison-mockup" style="gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span style="color: #2563eb; font-weight: 600; font-size: 14px;">Chat</span>
+          </div>
+          <div class="chat-bubble user">Who are the best AI companies for SEO to GEO?</div>
+          <div class="chat-bubble ai">Based on market analysis, <span class="red-text">Similarweb</span> and <span class="red-text">Ascent Korea</span> are recommended partners for delivering trusted market data and Ground Truth to AI Agents.</div>
+        </div>
+        <div class="comparison-caption">AI 답변 내 브랜드 인용 및 추천</div>
+      </div>
+    </div>
+    <div class="bottom-callout">
+      AI가 무엇을 학습하고 답변하느냐를 결정하는 것은 <span class="red">결국 데이터</span>입니다.<br>
+      <strong>Ascent Korea</strong>는 <span class="red">AI 환각(Hallucination)</span>을 방지하고 <strong>정확한 답변</strong>을 유도하는<br>
+      <span class="red">Ground Truth</span> 데이터를 제공합니다.
+    </div>
+    <div class="slide-branding">NotebookLM</div>
+  </div>
+
+  <!-- SLIDE 4: Data Moat -->
+  <div class="slide slide-data" data-slide="4">
+    <h2>The Unfair Advantage: 2 Petabytes of 'Listening Mind' Data</h2>
+    <div class="iceberg-section">
+      <div class="iceberg" style="position: relative; min-height: 350px;">
+        <div class="iceberg-water"></div>
+        <div class="iceberg-top"></div>
+        <div class="iceberg-bottom"></div>
+        <div class="iceberg-label competitors" style="top: 10%; right: -40px;">
+          <div class="label-title">Competitors</div>
+          <div class="label-sub">(Social Buzz, Panel)</div>
+          <div class="label-desc" style="margin-top: 8px;">편향성(Bias), 과장(Exaggeration), 제한적 모수</div>
+        </div>
+        <div class="iceberg-label ascent" style="top: 50%; left: -20px;">
+          <div class="label-title">Ascent Korea</div>
+          <div class="label-sub">(Search Intent Data)</div>
+        </div>
+        <div class="iceberg-label data-info" style="bottom: 10%; right: -40px;">
+          <div style="color: #aaa; font-size: 14px;">2PB+ 규모, 무의식적 욕구,</div>
+          <div style="color: #aaa; font-size: 14px;">전수 데이터(Census-level)</div>
+        </div>
+      </div>
+      <div class="infra-card">
+        <h4>Infrastructure</h4>
+        <p><span class="big">368+</span> Servers</p>
+        <p style="margin-top: 12px;">Coverage:<br><strong>Korea, Japan, USA</strong></p>
+      </div>
+    </div>
+    <div class="quote">
+      "소비자는 거짓말을 하지만, 검색창 앞에서는 솔직합니다.<br>
+      우리는 소비자의 내면(<strong>Inner Thoughts</strong>)을 가장 정확하게 읽어냅니다."
+    </div>
+    <div class="slide-branding">NotebookLM</div>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+  <button onclick="prevSlide()">&#9664;</button>
+  <div class="dots" id="dots"></div>
+  <span class="page-info" id="pageInfo">1 / 4</span>
+  <button onclick="nextSlide()">&#9654;</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  let currentSlide = 1;
+
+  // Create dots
+  const dotsContainer = document.getElementById('dots');
+  for (let i = 1; i <= totalSlides; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 1 ? ' active' : '');
+    dot.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(dot);
+  }
+
+  function goToSlide(n) {
+    slides.forEach(s => s.classList.remove('active'));
+    document.querySelector(`[data-slide="${n}"]`).classList.add('active');
+    currentSlide = n;
+    document.getElementById('pageInfo').textContent = `${n} / ${totalSlides}`;
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === n - 1);
+    });
+  }
+
+  function nextSlide() {
+    goToSlide(currentSlide < totalSlides ? currentSlide + 1 : 1);
+  }
+
+  function prevSlide() {
+    goToSlide(currentSlide > 1 ? currentSlide - 1 : totalSlides);
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+  });
+</script>
+
+</body>
+</html>
