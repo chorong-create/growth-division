@@ -45,22 +45,6 @@ export default async function Image() {
           overflow: "hidden",
         }}
       >
-        {/* Subtle grid pattern overlay */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            opacity: 0.05,
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-            display: "flex",
-          }}
-        />
-
         {/* Red accent line at top */}
         <div
           style={{
@@ -78,9 +62,9 @@ export default async function Image() {
         <img
           src={logoBase64}
           alt="ListeningMind"
-          height={50}
+          height={80}
           style={{
-            marginBottom: "48px",
+            marginBottom: "40px",
             filter: "brightness(0) invert(1)",
           }}
         />
@@ -97,7 +81,7 @@ export default async function Image() {
         >
           <div
             style={{
-              fontSize: "44px",
+              fontSize: "60px",
               fontFamily: "Noto Sans KR",
               color: "#ffffff",
               textAlign: "center",
@@ -109,7 +93,7 @@ export default async function Image() {
           </div>
           <div
             style={{
-              fontSize: "44px",
+              fontSize: "60px",
               fontFamily: "Noto Sans KR",
               textAlign: "center",
               lineHeight: 1.3,
@@ -137,7 +121,7 @@ export default async function Image() {
         >
           <div
             style={{
-              fontSize: "22px",
+              fontSize: "30px",
               fontFamily: "Noto Sans KR Medium",
               color: "rgba(255, 255, 255, 0.9)",
               display: "flex",
