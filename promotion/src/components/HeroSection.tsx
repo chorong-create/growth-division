@@ -62,7 +62,7 @@ export default function HeroSection() {
               </svg>
             </a>
             <a
-              href="/리스닝마인드 서비스소개서_2026.03.pdf"
+              href="/listeningmind-service-guide-2026-03.pdf"
               target="_blank"
               rel="noopener noreferrer"
               download
